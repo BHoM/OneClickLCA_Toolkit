@@ -19,6 +19,15 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="LifeCycleAssessment_oM">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\LifeCycleAssessment_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Quantities_oM">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

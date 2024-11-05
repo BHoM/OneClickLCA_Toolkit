@@ -36,7 +36,7 @@ namespace BH.Engine.Adapters.OneClickLCA
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Description of the method. Will appear in the UI tooltip.")]
+        /*[Description("Description of the method. Will appear in the UI tooltip.")]
         [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
         [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
         public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
@@ -44,7 +44,7 @@ namespace BH.Engine.Adapters.OneClickLCA
             // This method will appear in every UI (e.g. Grasshopper) as a component.
             // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
             throw new NotImplementedException();
-        }
+        }*/
 
         /***************************************************/
 

@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System;
@@ -28,31 +27,40 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Query
+    [Description("RICS WLCA Standard 2023  - concept design stage.")]
+    public enum ConceptDesignCategory
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("exampleObject", "Description of the input. Will appear in the UI tooltip.")]
-        [Input("additionalInput", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static string ExampleQueryMethod(this ExampleObject exampleObject, string additionalInput = "")
-        {
-            // NOTE: Extension method
-            // Query methods should return some data that is derivable from a main input object on which they operate upon. 
-            // For this reason, they are to be written as extension methods (using the `this` keyword on the first input).
-
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            return exampleObject.SomeStringProperty + exampleObject.SomeNumberProperty.ToString() + additionalInput;
-        }*/
-
-        /***************************************************/
-
+        Undefined,
+        [DisplayText("0.1 Treatment, demolition and facilitating works")]
+        _0_1_TreatmentDemolitionAndFacilitatingWorks,
+        [DisplayText("1 Sub-structure")]
+        _1_SubStructure,
+        [DisplayText("2 Superstructure")]
+        _2_SuperStructure,
+        [DisplayText("3 Finishes")]
+        _3_Finishes,
+        [DisplayText("4 FF&E")]
+        _4_FFAndE,
+        [DisplayText("5.1 Public Health")]
+        _5_1_PublicHealth,
+        [DisplayText("5.2 Heating, Ventilation and Cooling (HVAC)")]
+        _5_2_HVAC,
+        [DisplayText("5.3 Electrical installations")]
+        _5_3_ElectricalInstallations,
+        [DisplayText("5.4 On site renewable energy generation")]
+        _5_4_OnSiteRenewableEnergyGeneration,
+        [DisplayText("5.5 Systems including Life safety, Fuel installations, Lift and conveyor installations, Services equipment, Disposal installations, Specialist installations, Builders work in connection with services")]
+        _5_5_OtherSystems,
+        [DisplayText("6 Pre-fabricated buildings and units")]
+        _6_PreFabricatedBuildingsAndUnits,
+        [DisplayText("7 Works to existing buildings")]
+        _7_WorksToExistingBuildings,
+        [DisplayText("8 External work")]
+        _8_ExternalWork,
+        [DisplayText("9 Others")]
+        _9_Others
     }
 }
 

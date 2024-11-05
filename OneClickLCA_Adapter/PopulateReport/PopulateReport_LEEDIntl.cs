@@ -20,40 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Adapter;
+using BH.Adapter.Excel;
+using BH.Engine.Adapter;
+using BH.oM.Adapter;
+using BH.oM.Adapters.Excel;
 using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
-using BH.oM.Base.Attributes;
-using System;
+using BH.oM.Data.Requests;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.Adapter.OneClickLCA
 {
-    public static partial class Query
+    public partial class OneClickLCAAdapter : BHoMAdapter
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("exampleObject", "Description of the input. Will appear in the UI tooltip.")]
-        [Input("additionalInput", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static string ExampleQueryMethod(this ExampleObject exampleObject, string additionalInput = "")
+        private OneClickReport PopulateReport_LEEDIntl(OneClickReport report, List<Dictionary<string, string>> entries)
         {
-            // NOTE: Extension method
-            // Query methods should return some data that is derivable from a main input object on which they operate upon. 
-            // For this reason, they are to be written as extension methods (using the `this` keyword on the first input).
-
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            return exampleObject.SomeStringProperty + exampleObject.SomeNumberProperty.ToString() + additionalInput;
-        }*/
+            return report;
+        }
 
         /***************************************************/
-
     }
 }
+
+
+
 
 

@@ -20,32 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapter;
+using BH.oM.Adapters.OneClickLCA;
+using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Adapter.OneClickLCA
+namespace BH.Engine.Adapters.OneClickLCA
 {
-    public partial class OneClickLCAAdapter : BHoMAdapter
+    public static partial class Create
     {
-        // Basic Delete method that deletes objects depending on their Type and Id. 
-        // It gets called by the Push or by the Remove Adapter Actions.
-        // Its implementation is facultative (not needed for a simple export/import scenario). 
-        // Toolkits need to implement (override) this only to get the full CRUD to work.
-        protected override int IDelete(Type type, IEnumerable<object> ids, ActionConfig actionConfig = null)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Create a RICS category beased o its code.")]
+        [Input("code", "Number corresponding to that category. E.g. 2.3 for Roof.")]
+        [Output("category", "RICS category represented by an enum.")]
+        public static RICSCategory RICSCategory(string code)
         {
-            //Insert code here to enable deletion of specific types of objects with specific ids
-            BH.Engine.Base.Compute.RecordError($"Delete for objects of type {type.Name} is not implemented in {(this as dynamic).GetType().Name}.");
-            return 0;
+            code = "_" + code.Replace(".", "_").Trim(new char[] { ' ', '_' });
+            return Enum.GetValues(typeof(RICSCategory)).OfType<RICSCategory>().FirstOrDefault(x => x.ToString().StartsWith(code));
         }
 
-        // There are more virtual Delete methods you might want to override and implement.
-        // Check the base BHoM_Adapter solution and the wiki for more info.
-
         /***************************************************/
+
     }
 }
 

@@ -20,30 +20,39 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Adapter;
+using BH.oM.Adapter;
 using BH.oM.Base;
-using BH.oM.Base.Attributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
-namespace BH.oM.Adapters.OneClickLCA
+namespace BH.Adapter.OneClickLCA
 {
-    [Description("Object description in here. Will appear in the UI tooltip.")]
-    public class ExampleObject : BHoMObject
+    public partial class OneClickLCAAdapter : BHoMAdapter
     {
-        // // See examples in the BHoM repo and the wiki to see how we define types.
-        // // Generally, all properties should be public and have public getter and setter.
-        // // BHoM Objects should have orthogonal properties and no behaviour (no methods), as in C# Records (or Python Dataclasses).
-        // // No constructor should be specified. If a specific instantiaton method is needed, we make it as an "Engine/Create" method.
-        // // Objects created with this convention will automatically appear as UI components (e.g. Grasshopper component).
+        /***************************************************/
+        /**** Public Overrides                          ****/
+        /***************************************************/
 
-        [Description("Property description in here.")]
-        public string SomeStringProperty { get; set; }
+        public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
+        {
+            BH.Engine.Base.Compute.RecordError("The push action is not supported for the OneClick LCA adapter.");
+            return new List<object>();
+        }
 
-        [Description("Property description in here.")]
-        public int SomeNumberProperty { get; set; }
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+
+
+        /***************************************************/
     }
 }
+
+
 
 

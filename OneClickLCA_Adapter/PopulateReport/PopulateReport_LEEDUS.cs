@@ -20,32 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Adapter;
+using BH.Adapter.Excel;
+using BH.Engine.Adapter;
 using BH.oM.Adapter;
-using System;
+using BH.oM.Adapters.Excel;
+using BH.oM.Adapters.OneClickLCA;
+using BH.oM.Base;
+using BH.oM.Data.Requests;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BH.Adapter.OneClickLCA
 {
     public partial class OneClickLCAAdapter : BHoMAdapter
     {
-        // This method gets called when appropriate by the Push method contained in the base Adapter class.
-        // Unlike the Create, Delete and Read, this method already exposes a simple implementation: it calls Delete and then Create.
-        // It can be overridden here keeping in mind the following:
-        // - it gets called once per each Type, and if equal objects are found;
-        // - the object equality is tested through this.AdapterComparers, that need to be implemented for each type.
-        // See the wiki for more info.
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-        protected override bool IUpdate<T>(IEnumerable<T> objects, ActionConfig actionConfig = null)
+        private OneClickReport PopulateReport_LEEDUS(OneClickReport report, List<Dictionary<string, string>> entries)
         {
-            return base.IUpdate(objects, actionConfig);
+            return report;
         }
 
         /***************************************************/
-
     }
 }
+
+
+
 
 

@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System;
@@ -28,27 +27,28 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Create
+    [Description("Represents a life cycle assessment as extracted from a OnceClick LCA report.")]
+    public class OneClickReport : BHoMObject
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        [Description("TODO")]
+        [DisplayText("Entity users")]
+        public List<string> EntityUsers { get; set; } = new List<string>();
 
-        [Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("someInput1", "Description of the input. Will appear in the UI tooltip.")]
-        [Input("someInput2", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(string someInput1, int someInput2)
-        {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            return new ExampleObject() { SomeStringProperty = someInput1, SomeNumberProperty = someInput2 };
-        }
+        [Description("TODO")]
+        [DisplayText("Project name")]
+        public string ProjectName { get; set; } = "";
 
-        /***************************************************/
+        [Description("TODO")]
+        [DisplayText("Design name")]
+        public string DesignName { get; set; } = "";
 
+        [Description("TODO")]
+        public Indicator Indicator { get; set; } = Indicator.Undefined;
+
+        [Description("TODO")]
+        public List<ReportEntry> Entries { get; set; } = new List<ReportEntry>();
     }
 }
 

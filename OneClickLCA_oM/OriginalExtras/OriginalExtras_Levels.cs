@@ -20,31 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Adapter.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Convert
+    [Description("Additional information found about an element in the original report for Level(s) life-cycle carbon (EN15804 +A1).")]
+    public class  OriginalExtras_Levels : BHoMObject, IOriginalExtras
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        [Description("TODO")]
+        public string Construction { get; set; } = "";
 
-        // Add methods for converting to BHoM from the specific software types. 
-        // Example:
-        public static BHoMObject FromOneClickLCA(this ExampleObject node)
-        {
-            //Insert code for convertion
-            throw new NotImplementedException();
-        }
+        [Description("TODO")]
+        [DisplayText("Transformation process")]
+        public string TransformationProcess { get; set; } = "";
 
-        /***************************************************/
+        [Description("TODO")]
+        public string UniClass { get; set; } = "";
+
+        [Description("TODO")]
+        [DisplayText("Csi master format")]
+        public string CsiMasterFormat { get; set; } = "";
+
+        [Description("TODO")]
+        public string Class { get; set; } = "";
+
+        [Description("TODO")]
+        [DisplayText("Imported label")]
+        public string ImportedLabel { get; set; } = "";
     }
 }
 

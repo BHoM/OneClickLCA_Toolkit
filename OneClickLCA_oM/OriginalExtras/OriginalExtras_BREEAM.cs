@@ -20,42 +20,56 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapter;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Adapter.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public partial class OneClickLCAAdapter : BHoMAdapter
+    [Description("Additional information found about an element in the original report for BREEAM/ GLA UK.")]
+    public class  OriginalExtras_BREEAM : BHoMObject, IOriginalExtras
     {
-        /***************************************************/
-        /**** Adapter overload method                   ****/
-        /***************************************************/
+        [Description("TODO")]
+        public string Construction { get; set; } = "";
 
-        // This method gets called when appropriate by the Pull method contained in the base Adapter class.
-        // It gets called once per each Type.
-        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
-        {
-            // Preferrably, different Create logic for different object types should go in separate methods.
-            // We achieve this by using the ICreate method to only dynamically dispatching to *type-specific Create implementations*
-            // In other words:
-            // if (type == typeof(SomeType1))
-            //     return ReadSomeType1(ids as dynamic);
-            // else if (type == typeof(SomeType2))
-            //     return ReadSomeType2(ids as dynamic);
-            // else if (type == typeof(SomeType3))
-            //     return ReadSomeType3(ids as dynamic);
+        [Description("TODO")]
+        [DisplayText("Transformation process")]
+        public string TransformationProcess { get; set; } = "";
 
-            return new List<IBHoMObject>();
-        }
+        [Description("TODO")]
+        public string UniClass { get; set; } = "";
 
-        /***************************************************/
+        [Description("TODO")]
+        [DisplayText("End of life process")]
+        public string EOLProcess { get; set; } = "";
 
+        [Description("TODO")]
+        [DisplayText("Non hazardous waste disposed")]
+        [Mass]
+        public double NonHazardousWasteDisposed { get; set; } = 0;
+
+        [Description("TODO")]
+        [Mass]
+        public double Energy { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Water consumption")]
+        [Volume]
+        public double WaterConsumption { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Distance traveled")]
+        [Length]
+        public double DistanceTraveled { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Fuel consumption")]
+        [Volume]
+        public double FuelConsumption { get; set; } = 0;
     }
 }
 

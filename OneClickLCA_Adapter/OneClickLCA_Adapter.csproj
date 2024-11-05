@@ -8,7 +8,7 @@
     <Description>https://github.com/BHoM/OneClickLCA_Toolkit</Description>
     <Version>5.0.0</Version>
     <Authors>BHoM</Authors>
-    <Copyright>Copyright © https://github.com/BHoM</Copyright>
+    <Copyright>Copyright ï¿½ https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Adapter.OneClickLCA</RootNamespace>
     <FileVersion>6.1.0.0</FileVersion>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -48,6 +48,24 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Excel_Adapter">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\Excel_Adapter.dll</HintPath>
+    </Reference>
+    <Reference Include="Excel_Engine">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\Excel_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Excel_oM">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\Excel_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="LifeCycleAssessment_Engine">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\LifeCycleAssessment_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="LifeCycleAssessment_oM">
+      <HintPath>..\..\..\ProgramData\BHoM\Assemblies\LifeCycleAssessment_oM.dll</HintPath>
     </Reference>
   </ItemGroup>
 
