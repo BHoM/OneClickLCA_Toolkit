@@ -30,6 +30,8 @@ using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Linq;
 
@@ -98,10 +100,10 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private double GetDouble(Dictionary<string, double> dictionary, string key)
+        private double GetDouble(Dictionary<string, double> dictionary, string key, double defaultValue = 0)
         {
             if (dictionary == null || !dictionary.ContainsKey(key))
-                return 0;
+                return defaultValue;
             else
                 return dictionary[key];
         }
@@ -118,7 +120,13 @@ namespace BH.Adapter.OneClickLCA
                 foreach (var kvp in mapping)
                     totals[kvp.Key] = kvp.Value.Select(x => GetDouble(totals, x)).Sum();
             }
-            
+
+            if (!totals.ContainsKey("B1-B7") && totals.Keys.Any(k => k.StartsWith("B")))
+                totals["B1-B7"] = GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7");
+
+            if (!totals.ContainsKey("C1-C4") && totals.Keys.Any(k => k.StartsWith("C")))
+                totals["C1-C4"] = GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4");
+
             return totals;
         }
 
@@ -129,26 +137,26 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
 
             return new ClimateChangeTotalNoBiogenicMetric(
-                0,
-                0,
-                0,
-                GetDouble(totals, "A1-A3"),
-                GetDouble(totals, "A4"),
-                GetDouble(totals, "A5"),
-                GetDouble(totals, "B1"),
-                GetDouble(totals, "B2"),
-                GetDouble(totals, "B3"),
-                GetDouble(totals, "B4"),
-                GetDouble(totals, "B5"),
-                GetDouble(totals, "B6"),
-                GetDouble(totals, "B7"),
-                GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7"),
-                GetDouble(totals, "C1"),
-                GetDouble(totals, "C2"),
-                GetDouble(totals, "C3"),
-                GetDouble(totals, "C4"),
-                GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4"),
-                GetDouble(totals, "D")
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
             );
         }
 
@@ -159,26 +167,26 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
 
             return new ClimateChangeBiogenicMetric(
-                0,
-                0,
-                0,
-                GetDouble(totals, "A1-A3"),
-                GetDouble(totals, "A4"),
-                GetDouble(totals, "A5"),
-                GetDouble(totals, "B1"),
-                GetDouble(totals, "B2"),
-                GetDouble(totals, "B3"),
-                GetDouble(totals, "B4"),
-                GetDouble(totals, "B5"),
-                GetDouble(totals, "B6"),
-                GetDouble(totals, "B7"),
-                GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7"),
-                GetDouble(totals, "C1"),
-                GetDouble(totals, "C2"),
-                GetDouble(totals, "C3"),
-                GetDouble(totals, "C4"),
-                GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4"),
-                GetDouble(totals, "D")
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
             );
         }
 
@@ -189,26 +197,26 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
 
             return new AcidificationMetric(
-                0,
-                0,
-                0,
-                GetDouble(totals, "A1-A3"),
-                GetDouble(totals, "A4"),
-                GetDouble(totals, "A5"),
-                GetDouble(totals, "B1"),
-                GetDouble(totals, "B2"),
-                GetDouble(totals, "B3"),
-                GetDouble(totals, "B4"),
-                GetDouble(totals, "B5"),
-                GetDouble(totals, "B6"),
-                GetDouble(totals, "B7"),
-                GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7"),
-                GetDouble(totals, "C1"),
-                GetDouble(totals, "C2"),
-                GetDouble(totals, "C3"),
-                GetDouble(totals, "C4"),
-                GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4"),
-                GetDouble(totals, "D")
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
             );
         }
 
@@ -219,26 +227,26 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
 
             return new EutrophicationCMLMetric(
-                0,
-                0,
-                0,
-                GetDouble(totals, "A1-A3"),
-                GetDouble(totals, "A4"),
-                GetDouble(totals, "A5"),
-                GetDouble(totals, "B1"),
-                GetDouble(totals, "B2"),
-                GetDouble(totals, "B3"),
-                GetDouble(totals, "B4"),
-                GetDouble(totals, "B5"),
-                GetDouble(totals, "B6"),
-                GetDouble(totals, "B7"),
-                GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7"),
-                GetDouble(totals, "C1"),
-                GetDouble(totals, "C2"),
-                GetDouble(totals, "C3"),
-                GetDouble(totals, "C4"),
-                GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4"),
-                GetDouble(totals, "D")
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
             );
         }
 
@@ -249,26 +257,26 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
 
             return new EutrophicationTRACIMetric(
-                0,
-                0,
-                0,
-                GetDouble(totals, "A1-A3"),
-                GetDouble(totals, "A4"),
-                GetDouble(totals, "A5"),
-                GetDouble(totals, "B1"),
-                GetDouble(totals, "B2"),
-                GetDouble(totals, "B3"),
-                GetDouble(totals, "B4"),
-                GetDouble(totals, "B5"),
-                GetDouble(totals, "B6"),
-                GetDouble(totals, "B7"),
-                GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7"),
-                GetDouble(totals, "C1"),
-                GetDouble(totals, "C2"),
-                GetDouble(totals, "C3"),
-                GetDouble(totals, "C4"),
-                GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4"),
-                GetDouble(totals, "D")
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
             );
         }
 
@@ -279,26 +287,26 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
 
             return new OzoneDepletionMetric(
-                0,
-                0,
-                0,
-                GetDouble(totals, "A1-A3"),
-                GetDouble(totals, "A4"),
-                GetDouble(totals, "A5"),
-                GetDouble(totals, "B1"),
-                GetDouble(totals, "B2"),
-                GetDouble(totals, "B3"),
-                GetDouble(totals, "B4"),
-                GetDouble(totals, "B5"),
-                GetDouble(totals, "B6"),
-                GetDouble(totals, "B7"),
-                GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7"),
-                GetDouble(totals, "C1"),
-                GetDouble(totals, "C2"),
-                GetDouble(totals, "C3"),
-                GetDouble(totals, "C4"),
-                GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4"),
-                GetDouble(totals, "D")
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
             );
         }
 
@@ -309,26 +317,26 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
 
             return new PhotochemicalOzoneCreationCMLMetric(
-                0,
-                0,
-                0,
-                GetDouble(totals, "A1-A3"),
-                GetDouble(totals, "A4"),
-                GetDouble(totals, "A5"),
-                GetDouble(totals, "B1"),
-                GetDouble(totals, "B2"),
-                GetDouble(totals, "B3"),
-                GetDouble(totals, "B4"),
-                GetDouble(totals, "B5"),
-                GetDouble(totals, "B6"),
-                GetDouble(totals, "B7"),
-                GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7"),
-                GetDouble(totals, "C1"),
-                GetDouble(totals, "C2"),
-                GetDouble(totals, "C3"),
-                GetDouble(totals, "C4"),
-                GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4"),
-                GetDouble(totals, "D")
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
             );
         }
 
@@ -339,26 +347,26 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
 
             return new PhotochemicalOzoneCreationTRACIMetric(
-                0,
-                0,
-                0,
-                GetDouble(totals, "A1-A3"),
-                GetDouble(totals, "A4"),
-                GetDouble(totals, "A5"),
-                GetDouble(totals, "B1"),
-                GetDouble(totals, "B2"),
-                GetDouble(totals, "B3"),
-                GetDouble(totals, "B4"),
-                GetDouble(totals, "B5"),
-                GetDouble(totals, "B6"),
-                GetDouble(totals, "B7"),
-                GetDouble(totals, "B1") + GetDouble(totals, "B2") + GetDouble(totals, "B3") + GetDouble(totals, "B4") + GetDouble(totals, "B5") + GetDouble(totals, "B6") + GetDouble(totals, "B7"),
-                GetDouble(totals, "C1"),
-                GetDouble(totals, "C2"),
-                GetDouble(totals, "C3"),
-                GetDouble(totals, "C4"),
-                GetDouble(totals, "C1") + GetDouble(totals, "C2") + GetDouble(totals, "C3") + GetDouble(totals, "C4"),
-                GetDouble(totals, "D")
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
             );
         }
 
