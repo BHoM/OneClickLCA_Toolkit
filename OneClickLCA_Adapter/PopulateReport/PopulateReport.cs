@@ -110,10 +110,10 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private Dictionary<string, double> GetTotals(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping)
+        private Dictionary<string, double> GetTotals(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping, double factor = 1)
         {
             Dictionary<string, double> totals = sections
-                .ToDictionary(g => g.Key, g => g.Select(x => GetDouble(x, propName)).Sum());
+                .ToDictionary(g => g.Key, g => factor * g.Select(x => GetDouble(x, propName)).Sum());
 
             if (mapping != null)
             {
@@ -132,9 +132,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private ClimateChangeTotalNoBiogenicMetric GetGWP(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null)
+        private ClimateChangeTotalNoBiogenicMetric GetGWP(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
-            Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new ClimateChangeTotalNoBiogenicMetric(
                 double.NaN,
@@ -162,9 +162,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private ClimateChangeBiogenicMetric GetBiogenicCarbon(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null)
+        private ClimateChangeBiogenicMetric GetBiogenicCarbon(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
-            Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new ClimateChangeBiogenicMetric(
                 double.NaN,
@@ -192,9 +192,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private AcidificationMetric GetAcidification(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null)
+        private AcidificationMetric GetAcidification(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
-            Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new AcidificationMetric(
                 double.NaN,
@@ -222,9 +222,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private EutrophicationCMLMetric GetEutrophicationCML(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null)
+        private EutrophicationCMLMetric GetEutrophicationCML(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
-            Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new EutrophicationCMLMetric(
                 double.NaN,
@@ -252,9 +252,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private EutrophicationTRACIMetric GetEutrophicationTRACI(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null)
+        private EutrophicationTRACIMetric GetEutrophicationTRACI(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
-            Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new EutrophicationTRACIMetric(
                 double.NaN,
@@ -282,9 +282,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private OzoneDepletionMetric GetOzoneDepletion(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null)
+        private OzoneDepletionMetric GetOzoneDepletion(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
-            Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new OzoneDepletionMetric(
                 double.NaN,
@@ -312,9 +312,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private PhotochemicalOzoneCreationCMLMetric GetPhotochemicalOzoneCreationCML(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null)
+        private PhotochemicalOzoneCreationCMLMetric GetPhotochemicalOzoneCreationCML(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
-            Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new PhotochemicalOzoneCreationCMLMetric(
                 double.NaN,
@@ -342,11 +342,71 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private PhotochemicalOzoneCreationTRACIMetric GetPhotochemicalOzoneCreationTRACI(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null)
+        private PhotochemicalOzoneCreationTRACIMetric GetPhotochemicalOzoneCreationTRACI(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
-            Dictionary<string, double> totals = GetTotals(sections, propName, mapping);
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new PhotochemicalOzoneCreationTRACIMetric(
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
+            );
+        }
+
+        /***************************************************/
+
+        private AbioticDepletionFossilResourcesMetric GetAbioticDepletionPotentialFossil(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        {
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
+
+            return new AbioticDepletionFossilResourcesMetric(
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
+            );
+        }
+
+        /***************************************************/
+
+        private AbioticDepletionMineralsAndMetalsMetric GetAbioticDepletionPotentialNonFossil(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        {
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
+
+            return new AbioticDepletionMineralsAndMetalsMetric(
                 double.NaN,
                 double.NaN,
                 double.NaN,

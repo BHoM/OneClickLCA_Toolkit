@@ -22,7 +22,6 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Data.Requests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,14 +29,16 @@ using System.Linq;
 
 namespace BH.oM.Adapters.OneClickLCA
 {
-    [Description("Request the content of a OneClick LCA report.")]
-    public class ReportRequest : BHoMObject, IRequest
+    [Description("Aditional inputs not found in the original OnceClick LCA report that were necessary for the calculation of the output.")]
+    public class AdditionalInputs : IFragment
     {
-        public string FileName { get; set; } = "";
+        [Description("TODO")]
+        [DisplayText("Gross floor area")]
+        public double FloorArea { get; set; } = 0;
 
-        public string Directory { get; set; } = "";
-
-        public AdditionalInputs AdditionalInputs { get; set; }
+        [Description("TODO")]
+        [DisplayText("Building life expectancy")]
+        public double BuildingLifeExpectancy { get; set; } = 0;
     }
 }
 

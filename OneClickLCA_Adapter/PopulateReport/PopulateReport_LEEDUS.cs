@@ -66,16 +66,16 @@ namespace BH.Adapter.OneClickLCA
                     Quantity = GetDouble(first, "User input"),
                     QuantityUnit = GetText(first, "Unit"),
                     MassOfRawMaterials = GetText(first, "Mass of raw materials kg"),
-                    RICSCategory = Convert.FromRICSv1(GetText(first, "Omniclass")),
+                    RICSCategory = Convert.FromOmniClass(GetText(first, "Omniclass")),
                     OriginalCategory = GetText(first, "Omniclass"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric>
                     {
                         GetGWP(sections, "Global warming kg CO₂e", mapping),
                         GetBiogenicCarbon(sections, "Biogenic carbon storage kg CO₂e bio", mapping),
                         GetAcidification(sections, "Acidification kg SO₂e", mapping),
-                        GetEutrophicationTRACI(sections, "Eutrophication kg PO₄e", mapping),
+                        GetEutrophicationTRACI(sections, "Eutrophication kg Ne", mapping),
                         GetOzoneDepletion(sections, "Ozone Depletion kg CFC11e", mapping),
-                        GetPhotochemicalOzoneCreationTRACI(sections, "Formation of ozone of lower atmosphere kg Ethenee", mapping)
+                        GetPhotochemicalOzoneCreationTRACI(sections, "Formation of tropospheric ozone kg O3e", mapping)
                     },
                     Question = GetText(first, "Question"),
                     Comment = GetText(first, "Comment"),

@@ -23,6 +23,7 @@
 using BH.Adapter;
 using BH.Adapter.Excel;
 using BH.Engine.Adapter;
+using BH.Engine.Base;
 using BH.oM.Adapter;
 using BH.oM.Adapters.Excel;
 using BH.oM.Adapters.OneClickLCA;
@@ -62,6 +63,10 @@ namespace BH.Adapter.OneClickLCA
                 return new List<object>();
             }
             OneClickReport report = FillReportMetadata(metadata.CustomData);
+
+            // Attach any potential additional inputs to the report
+            if (request.AdditionalInputs != null)
+                report.Fragments.Add(request.AdditionalInputs);
 
             // Get the valid range of cells by looking at the column headers
             TableRow headers = excelAdapter.Pull(BH.Engine.Excel.Create.CellValuesRequest("", "A3:AZ3")).FirstOrDefault() as TableRow;

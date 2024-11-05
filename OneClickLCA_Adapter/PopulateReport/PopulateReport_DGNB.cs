@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -23,14 +23,17 @@
 using BH.Adapter;
 using BH.Adapter.Excel;
 using BH.Engine.Adapter;
+using BH.Engine.Base;
 using BH.oM.Adapter;
 using BH.oM.Adapters.Excel;
 using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BH.Adapter.OneClickLCA
 {
@@ -42,6 +45,65 @@ namespace BH.Adapter.OneClickLCA
 
         private OneClickReport PopulateReport_DGNB(OneClickReport report, List<Dictionary<string, string>> entries)
         {
+            AdditionalInputs additionalInputs = report.FindFragment<AdditionalInputs>();
+            if (additionalInputs == null)
+            {
+                BH.Engine.Base.Compute.RecordError("The request needs to be provided with the building area and life expectancy in order to calculate teh environmental metrics.");
+                return report;
+            }
+
+            IEnumerable<IEnumerable<Dictionary<string, string>>> groups = entries
+                .Where(x => !string.IsNullOrWhiteSpace(GetText(x, "Resource")) && Regex.IsMatch(GetText(x, "KG DIN 276"), "^[1-9]"))
+                .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "KG DIN 276") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"));
+
+            report.Entries = new List<ReportEntry>();
+
+            foreach (var group in groups)
+            {
+                Dictionary<string, string> first = group.First();
+                IEnumerable<IGrouping<string, Dictionary<string, string>>> sections = group.GroupBy(x => GetText(x, "Section"));
+
+                Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
+                {
+                    ["B4"] = new List<string> { "B4-B5" }
+                };
+
+                double factor = additionalInputs.FloorArea * additionalInputs.BuildingLifeExpectancy;
+
+                report.Entries.Add(new ReportEntry
+                {
+                    Resource = GetText(first, "Resource"),
+                    Quantity = GetDouble(first, "User input"),
+                    QuantityUnit = GetText(first, "Unit"),
+                    MassOfRawMaterials = GetText(first, "Mass of raw materials kg"),
+                    RICSCategory = Convert.FromDGNB(GetText(first, "KG DIN 276")),
+                    OriginalCategory = GetText(first, "KG DIN 276"),
+                    EnvironmentalMetrics = new List<EnvironmentalMetric>
+                    {
+                        GetGWP(sections, "Global warming kg CO₂e/m²/a", mapping, factor),
+                        GetAcidification(sections, "Acidification kg SO₂e/m²/a", mapping, factor),
+                        GetEutrophicationCML(sections, "Eutrophication kg PO₄e/m²/a", mapping, factor),
+                        GetOzoneDepletion(sections, "Ozone Depletion kg CFC11e/m²/a", mapping, factor),
+                        GetPhotochemicalOzoneCreationCML(sections, "Formation of ozone of lower atmosphere kg Ethenee/m²/a", mapping, factor),
+                        GetAbioticDepletionPotentialFossil(sections, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ/m²/a", mapping, factor),
+                        GetAbioticDepletionPotentialNonFossil(sections, "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe/m²/a", mapping, factor)
+                    },
+                    Question = GetText(first, "Question"),
+                    Comment = GetText(first, "Comment"),
+                    ServiceLife = GetText(first, "Service life"),
+                    ResourceType = GetText(first, "Resource type"),
+                    Datasource = GetText(first, "Datasource"),
+                    YearsOfReplacement = GetDouble(first, "Years of replacement"),
+                    OriginalExtras = new OriginalExtras_DGNB
+                    {
+                        NonRenewablePrimaryEnergyUse = factor * GetDouble(first, "Total use of non renewable primary energy MJ/m²/a") * 1000000,
+                        RenewablePrimaryEnergyUse = factor * GetDouble(first, "Total use of renewable primary energy MJ/m²/a") * 1000000,
+                        PrimaryEnergyUse = factor * GetDouble(first, "Total use of primary energy MJ/m²/a") * 1000000,
+                        NetFreshWaterUse = factor * GetDouble(first, "Use of net fresh water m³/m²/a")
+                    }
+                });
+            }
+
             return report;
         }
 
