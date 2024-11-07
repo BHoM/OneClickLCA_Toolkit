@@ -44,16 +44,16 @@ namespace BH.Adapter.OneClickLCA
 
         private OneClickReport PopulateReport_Levels(OneClickReport report, List<Dictionary<string, string>> entries)
         {
-            IEnumerable<IEnumerable<Dictionary<string, string>>> groups = entries
+            IEnumerable<Dictionary<string, Dictionary<string, string>>> groups = entries
                 .Where(x => !string.IsNullOrWhiteSpace(GetText(x, "Resource")) && Regex.IsMatch(GetText(x, "Building Parts"), "^[1-9]"))
-                .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "Building Parts") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"));
+                .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "Building Parts") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"))
+                .SelectMany(x => GetEntries(x));
 
             report.Entries = new List<ReportEntry>();
 
             foreach (var group in groups)
             {
-                Dictionary<string, string> first = group.First();
-                IEnumerable<IGrouping<string, Dictionary<string, string>>> sections = group.GroupBy(x => GetText(x, "Section"));
+                Dictionary<string, string> first = group.Values.First();
 
                 Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
                 {
@@ -70,8 +70,8 @@ namespace BH.Adapter.OneClickLCA
                     OriginalCategory = GetText(first, "Building Parts"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric>
                     {
-                        GetGWP(sections, "Global warming kg CO₂e", mapping),
-                        GetBiogenicCarbon(sections, "Biogenic carbon storage kg CO₂e bio", mapping),
+                        GetGWP(group, "Global warming kg CO₂e", mapping),
+                        GetBiogenicCarbon(group, "Biogenic carbon storage kg CO₂e bio", mapping),
                     },
                     Question = GetText(first, "Question"),
                     Comment = GetText(first, "Comment"),

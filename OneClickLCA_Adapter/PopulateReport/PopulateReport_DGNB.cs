@@ -52,20 +52,20 @@ namespace BH.Adapter.OneClickLCA
                 return report;
             }
 
-            IEnumerable<IEnumerable<Dictionary<string, string>>> groups = entries
+            IEnumerable<Dictionary<string, Dictionary<string, string>>> groups = entries
                 .Where(x => !string.IsNullOrWhiteSpace(GetText(x, "Resource")) && Regex.IsMatch(GetText(x, "KG DIN 276"), "^[1-9]"))
-                .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "KG DIN 276") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"));
+                .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "KG DIN 276") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"))
+                .SelectMany(x => GetEntries(x));
 
             report.Entries = new List<ReportEntry>();
 
             foreach (var group in groups)
             {
-                Dictionary<string, string> first = group.First();
-                IEnumerable<IGrouping<string, Dictionary<string, string>>> sections = group.GroupBy(x => GetText(x, "Section"));
+                Dictionary<string, string> first = group.Values.First();
 
                 Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
                 {
-                    ["B4"] = new List<string> { "B4-B5" }
+                    ["B4"] = new List<string> { "B4-B4-Abfall" }
                 };
 
                 double factor = additionalInputs.FloorArea * additionalInputs.BuildingLifeExpectancy;
@@ -80,13 +80,13 @@ namespace BH.Adapter.OneClickLCA
                     OriginalCategory = GetText(first, "KG DIN 276"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric>
                     {
-                        GetGWP(sections, "Global warming kg CO₂e/m²/a", mapping, factor),
-                        GetAcidification(sections, "Acidification kg SO₂e/m²/a", mapping, factor),
-                        GetEutrophicationCML(sections, "Eutrophication kg PO₄e/m²/a", mapping, factor),
-                        GetOzoneDepletion(sections, "Ozone Depletion kg CFC11e/m²/a", mapping, factor),
-                        GetPhotochemicalOzoneCreationCML(sections, "Formation of ozone of lower atmosphere kg Ethenee/m²/a", mapping, factor),
-                        GetAbioticDepletionPotentialFossil(sections, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ/m²/a", mapping, factor),
-                        GetAbioticDepletionPotentialNonFossil(sections, "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe/m²/a", mapping, factor)
+                        GetGWP(group, "Global warming kg CO₂e/m²/a", mapping, factor),
+                        GetAcidification(group, "Acidification kg SO₂e/m²/a", mapping, factor),
+                        GetEutrophicationCML(group, "Eutrophication kg PO₄e/m²/a", mapping, factor),
+                        GetOzoneDepletion(group, "Ozone Depletion kg CFC11e/m²/a", mapping, factor),
+                        GetPhotochemicalOzoneCreationCML(group, "Formation of ozone of lower atmosphere kg Ethenee/m²/a", mapping, factor),
+                        GetAbioticDepletionPotentialFossil(group, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ/m²/a", mapping, factor),
+                        GetAbioticDepletionPotentialNonFossil(group, "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe/m²/a", mapping, factor)
                     },
                     Question = GetText(first, "Question"),
                     Comment = GetText(first, "Comment"),

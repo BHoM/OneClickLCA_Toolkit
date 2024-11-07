@@ -110,10 +110,21 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private Dictionary<string, double> GetTotals(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping, double factor = 1)
+        private List<Dictionary<string, Dictionary<string, string>>> GetEntries(IEnumerable<Dictionary<string, string>> group)
+        {
+            return group.GroupBy(g => g["Section"])
+                .SelectMany(g => g.Select((item, index) => new { item, index, section = g.Key }))
+                .GroupBy(x => x.index, x => new { x.item, x.section })
+                .Select(g => g.ToDictionary(x => x.section, x => x.item))
+                .ToList();
+        }
+
+        /***************************************************/
+
+        private Dictionary<string, double> GetTotals(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping, double factor = 1)
         {
             Dictionary<string, double> totals = sections
-                .ToDictionary(g => g.Key, g => factor * g.Select(x => GetDouble(x, propName)).Sum());
+                .ToDictionary(x => x.Key, x => factor * GetDouble(x.Value, propName));
 
             if (mapping != null)
             {
@@ -132,7 +143,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private ClimateChangeTotalNoBiogenicMetric GetGWP(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private ClimateChangeTotalNoBiogenicMetric GetGWP(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -162,7 +173,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private ClimateChangeBiogenicMetric GetBiogenicCarbon(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private ClimateChangeBiogenicMetric GetBiogenicCarbon(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -192,7 +203,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private AcidificationMetric GetAcidification(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private AcidificationMetric GetAcidification(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -222,7 +233,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private EutrophicationCMLMetric GetEutrophicationCML(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private EutrophicationCMLMetric GetEutrophicationCML(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -252,7 +263,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private EutrophicationTRACIMetric GetEutrophicationTRACI(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private EutrophicationTRACIMetric GetEutrophicationTRACI(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -282,7 +293,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private OzoneDepletionMetric GetOzoneDepletion(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private OzoneDepletionMetric GetOzoneDepletion(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -312,7 +323,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private PhotochemicalOzoneCreationCMLMetric GetPhotochemicalOzoneCreationCML(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private PhotochemicalOzoneCreationCMLMetric GetPhotochemicalOzoneCreationCML(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -342,7 +353,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private PhotochemicalOzoneCreationTRACIMetric GetPhotochemicalOzoneCreationTRACI(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private PhotochemicalOzoneCreationTRACIMetric GetPhotochemicalOzoneCreationTRACI(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -372,7 +383,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private AbioticDepletionFossilResourcesMetric GetAbioticDepletionPotentialFossil(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private AbioticDepletionFossilResourcesMetric GetAbioticDepletionPotentialFossil(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
@@ -402,7 +413,7 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private AbioticDepletionMineralsAndMetalsMetric GetAbioticDepletionPotentialNonFossil(IEnumerable<IGrouping<string, Dictionary<string, string>>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        private AbioticDepletionMineralsAndMetalsMetric GetAbioticDepletionPotentialNonFossil(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 

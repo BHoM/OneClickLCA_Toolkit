@@ -44,16 +44,16 @@ namespace BH.Adapter.OneClickLCA
 
         private OneClickReport PopulateReport_BREEAM(OneClickReport report, List<Dictionary<string, string>> entries)
         {
-            IEnumerable<IEnumerable<Dictionary<string, string>>> groups = entries
+            IEnumerable<Dictionary<string, Dictionary<string, string>>> groups = entries
                 .Where(x => !string.IsNullOrWhiteSpace(GetText(x, "Resource")) && Regex.IsMatch(GetText(x, "RICS category"), "^[1-9]"))
-                .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "RICS category") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"));
+                .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "RICS category") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"))
+                .SelectMany(x => GetEntries(x));
 
             report.Entries = new List<ReportEntry>();
 
             foreach (var group in groups)
             {
-                Dictionary<string, string> first = group.First();
-                IEnumerable<IGrouping<string, Dictionary<string, string>>> sections = group.GroupBy(x => GetText(x, "Section"));
+                Dictionary<string, string> first = group.Values.First();
 
                 Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
                 {
@@ -70,12 +70,12 @@ namespace BH.Adapter.OneClickLCA
                     OriginalCategory = GetText(first, "RICS category"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric> 
                     { 
-                        GetGWP(sections, "Global warming kg CO₂e", mapping),
-                        GetBiogenicCarbon(sections, "Biogenic carbon storage kg CO₂e bio", mapping),
-                        GetAcidification(sections, "Acidification kg SO₂e", mapping),
-                        GetEutrophicationCML(sections, "Eutrophication kg PO₄e", mapping),
-                        GetOzoneDepletion(sections, "Ozone Depletion kg CFC11e", mapping),
-                        GetPhotochemicalOzoneCreationCML(sections, "Formation of ozone of lower atmosphere kg Ethenee", mapping)
+                        GetGWP(group, "Global warming kg CO₂e", mapping),
+                        GetBiogenicCarbon(group, "Biogenic carbon storage kg CO₂e bio", mapping),
+                        GetAcidification(group, "Acidification kg SO₂e", mapping),
+                        GetEutrophicationCML(group, "Eutrophication kg PO₄e", mapping),
+                        GetOzoneDepletion(group, "Ozone Depletion kg CFC11e", mapping),
+                        GetPhotochemicalOzoneCreationCML(group, "Formation of ozone of lower atmosphere kg Ethenee", mapping)
                     },
                     Question = GetText(first, "Question"),
                     Comment = GetText(first, "Comment"),
