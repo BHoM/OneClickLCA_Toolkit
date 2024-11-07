@@ -62,9 +62,9 @@ namespace BH.Adapter.OneClickLCA
                 report.Entries.Add(new ReportEntry
                 {
                     Resource = GetText(first,"Resource"),
-                    Quantity = GetDouble(first, "User input"),
+                    Quantity = GetDouble(first, "User input", double.NaN),
                     QuantityUnit = GetText(first, "Unit"),
-                    MassOfRawMaterials = GetText(first, "Mass of raw materials kg"),
+                    MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
                     RICSCategory = Convert.FromRICSv1(GetText(first, "RICS category")),
                     OriginalCategory = GetText(first, "RICS category"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric>
@@ -77,16 +77,16 @@ namespace BH.Adapter.OneClickLCA
                     ServiceLife = GetText(first, "Service life"),
                     ResourceType = GetText(first, "Resource type"),
                     Datasource = GetText(first, "Datasource"),
-                    YearsOfReplacement = GetDouble(first, "Years of replacement"),
-                    OriginalExtras = new OriginalExtras_WLCA
+                    YearsOfReplacement = GetDouble(first, "Years of replacement", double.NaN),
+                    OriginalExtras = group.ToDictionary(x => x.Key, x => new OriginalExtras_WLCA
                     {
-                        Construction = GetText(first, "Construction"),
-                        TransformationProcess = GetText(first, "Transformation process"),
-                        UniClass = GetText(first, "uniClass"),
-                        EstimatedReusableMaterials = GetDouble(first, "Estimated reusable materials kg"),
-                        EstimatedRecyclableMaterials = GetDouble(first, "Estimated recyclable materials kg"),
-                        EOLProcess = GetText(first,"EOL Process")
-                    }
+                        Construction = GetText(x.Value, "Construction"),
+                        TransformationProcess = GetText(x.Value, "Transformation process"),
+                        UniClass = GetText(x.Value, "uniClass"),
+                        EstimatedReusableMaterials = GetDouble(x.Value, "Estimated reusable materials kg", double.NaN),
+                        EstimatedRecyclableMaterials = GetDouble(x.Value, "Estimated recyclable materials kg", double.NaN),
+                        EOLProcess = GetText(x.Value, "EOL Process")
+                    } as IOriginalExtras)
                 });
             }
             

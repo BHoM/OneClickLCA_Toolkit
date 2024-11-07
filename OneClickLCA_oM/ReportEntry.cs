@@ -47,7 +47,7 @@ namespace BH.oM.Adapters.OneClickLCA
         [Description("TODO")]
         [DisplayText("Mass of raw materials")]
         [Mass]
-        public string MassOfRawMaterials { get; set; } = "";
+        public Dictionary<string, double> MassOfRawMaterials { get; set; } = new Dictionary<string, double>();
 
         [Description("TODO")]
         [DisplayText("RICS category")]
@@ -86,9 +86,9 @@ namespace BH.oM.Adapters.OneClickLCA
         [Length]
         public double Thickness { get; set; } = 0;
 
-        [Description("Additional information found in the original report")]
+        [Description("Additional information found in the original report organised by section (i.e. LCA module)")]
         [DisplayText("Original extras")]
-        public IOriginalExtras OriginalExtras { get; set; }
+        public Dictionary<string, IOriginalExtras> OriginalExtras { get; set; }
     }
 }
 

@@ -73,9 +73,9 @@ namespace BH.Adapter.OneClickLCA
                 report.Entries.Add(new ReportEntry
                 {
                     Resource = GetText(first, "Resource"),
-                    Quantity = GetDouble(first, "User input"),
+                    Quantity = GetDouble(first, "User input", double.NaN),
                     QuantityUnit = GetText(first, "Unit"),
-                    MassOfRawMaterials = GetText(first, "Mass of raw materials kg"),
+                    MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
                     RICSCategory = Convert.FromDGNB(GetText(first, "KG DIN 276")),
                     OriginalCategory = GetText(first, "KG DIN 276"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric>
@@ -93,14 +93,14 @@ namespace BH.Adapter.OneClickLCA
                     ServiceLife = GetText(first, "Service life"),
                     ResourceType = GetText(first, "Resource type"),
                     Datasource = GetText(first, "Datasource"),
-                    YearsOfReplacement = GetDouble(first, "Years of replacement"),
-                    OriginalExtras = new OriginalExtras_DGNB
+                    YearsOfReplacement = GetDouble(first, "Years of replacement", double.NaN),
+                    OriginalExtras = group.ToDictionary(x => x.Key, x => new OriginalExtras_DGNB
                     {
-                        NonRenewablePrimaryEnergyUse = factor * GetDouble(first, "Total use of non renewable primary energy MJ/m²/a") * 1000000,
-                        RenewablePrimaryEnergyUse = factor * GetDouble(first, "Total use of renewable primary energy MJ/m²/a") * 1000000,
-                        PrimaryEnergyUse = factor * GetDouble(first, "Total use of primary energy MJ/m²/a") * 1000000,
-                        NetFreshWaterUse = factor * GetDouble(first, "Use of net fresh water m³/m²/a")
-                    }
+                        NonRenewablePrimaryEnergyUse = factor * GetDouble(x.Value, "Total use of non renewable primary energy MJ/m²/a", double.NaN) * 1000000,
+                        RenewablePrimaryEnergyUse = factor * GetDouble(x.Value, "Total use of renewable primary energy MJ/m²/a", double.NaN) * 1000000,
+                        PrimaryEnergyUse = factor * GetDouble(x.Value, "Total use of primary energy MJ/m²/a", double.NaN) * 1000000,
+                        NetFreshWaterUse = factor * GetDouble(x.Value, "Use of net fresh water m³/m²/a", double.NaN)
+                    } as IOriginalExtras)
                 });
             }
 

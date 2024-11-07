@@ -74,9 +74,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private double ToDouble(string input)
+        private double ToDouble(string input, double defaultValue = 0)
         {
-            double val = 0;
+            double val = defaultValue;
             double.TryParse(input, out val);
             return val;
         }
@@ -93,9 +93,9 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        private double GetDouble(Dictionary<string, string> dictionary, string key)
+        private double GetDouble(Dictionary<string, string> dictionary, string key, double defaultValue = 0)
         {
-            return ToDouble(GetText(dictionary, key));
+            return ToDouble(GetText(dictionary, key), defaultValue);
         }
 
         /***************************************************/

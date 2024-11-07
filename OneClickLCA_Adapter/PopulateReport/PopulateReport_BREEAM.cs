@@ -54,7 +54,7 @@ namespace BH.Adapter.OneClickLCA
             foreach (var group in groups)
             {
                 Dictionary<string, string> first = group.Values.First();
-
+                
                 Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
                 {
                     ["B4"] = new List<string> { "B4-B5" }
@@ -63,9 +63,9 @@ namespace BH.Adapter.OneClickLCA
                 report.Entries.Add(new ReportEntry
                 {
                     Resource = GetText(first, "Resource"),
-                    Quantity = GetDouble(first, "User input"),
+                    Quantity = GetDouble(first, "User input", double.NaN),
                     QuantityUnit = GetText(first, "Unit"),
-                    MassOfRawMaterials = GetText(first, "Mass of raw materials kg"),
+                    MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
                     RICSCategory = Convert.FromRICSv1(GetText(first, "RICS category")),
                     OriginalCategory = GetText(first, "RICS category"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric> 
@@ -82,19 +82,19 @@ namespace BH.Adapter.OneClickLCA
                     ServiceLife = GetText(first, "Service life"),
                     ResourceType = GetText(first, "Resource type"),
                     Datasource = GetText(first, "Datasource"),
-                    YearsOfReplacement = GetDouble(first, "Years of replacement"),
-                    OriginalExtras = new OriginalExtras_BREEAM
+                    YearsOfReplacement = GetDouble(first, "Years of replacement", double.NaN),
+                    OriginalExtras = group.ToDictionary(x => x.Key, x => new OriginalExtras_BREEAM
                     {
-                        Construction = GetText(first, "Construction"),
-                        TransformationProcess = GetText(first, "Transformation process"),
-                        UniClass = GetText(first, "uniClass"),
-                        EOLProcess = GetText(first, "EOL Process"),
-                        NonHazardousWasteDisposed = GetDouble(first, "Non hazardous waste disposed kg"),
-                        Energy = GetDouble(first, "Energy kWh") * 3600000,
-                        WaterConsumption = GetDouble(first, "Water consumption m³"),
-                        DistanceTraveled = GetDouble(first, "Distance traveled km") * 1000,
-                        FuelConsumption = GetDouble(first, "Fuel consumption litres") * 0.001
-                    }
+                        Construction = GetText(x.Value, "Construction"),
+                        TransformationProcess = GetText(x.Value, "Transformation process"),
+                        UniClass = GetText(x.Value, "uniClass"),
+                        EOLProcess = GetText(x.Value, "EOL Process"),
+                        NonHazardousWasteDisposed = GetDouble(x.Value, "Non hazardous waste disposed kg", double.NaN),
+                        Energy = GetDouble(x.Value, "Energy kWh", double.NaN) * 3600000,
+                        WaterConsumption = GetDouble(x.Value, "Water consumption m³", double.NaN),
+                        DistanceTraveled = GetDouble(x.Value, "Distance traveled km", double.NaN) * 1000,
+                        FuelConsumption = GetDouble(x.Value, "Fuel consumption litres", double.NaN) * 0.001
+                    } as IOriginalExtras)
                 });
             }
 

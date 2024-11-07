@@ -63,9 +63,9 @@ namespace BH.Adapter.OneClickLCA
                 report.Entries.Add(new ReportEntry
                 {
                     Resource = GetText(first, "Resource"),
-                    Quantity = GetDouble(first, "User input"),
+                    Quantity = GetDouble(first, "User input", double.NaN),
                     QuantityUnit = GetText(first, "Unit"),
-                    MassOfRawMaterials = GetText(first, "Mass of raw materials kg"),
+                    MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
                     RICSCategory = Convert.FromRICSv1(GetText(first, "Building Parts")),
                     OriginalCategory = GetText(first, "Building Parts"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric>
@@ -78,18 +78,18 @@ namespace BH.Adapter.OneClickLCA
                     ServiceLife = GetText(first, "Service life"),
                     ResourceType = GetText(first, "Resource type"),
                     Datasource = GetText(first, "Datasource"),
-                    YearsOfReplacement = GetDouble(first, "Years of replacement"),
+                    YearsOfReplacement = GetDouble(first, "Years of replacement", double.NaN),
                     Name = GetText(first, "Name"),
-                    Thickness = GetDouble(first, "Thickness mm") / 1000,
-                    OriginalExtras = new OriginalExtras_Levels
+                    Thickness = GetDouble(first, "Thickness mm", double.NaN) / 1000,
+                    OriginalExtras = group.ToDictionary(x => x.Key, x => new OriginalExtras_Levels
                     {
-                        Construction = GetText(first, "Construction"),
-                        TransformationProcess = GetText(first, "Transformation process"),
-                        UniClass = GetText(first, "uniClass"),
-                        CsiMasterFormat = GetText(first, "csiMasterformat"),
-                        Class = GetText(first, "class"),
-                        ImportedLabel = GetText(first, "Imported label")
-                    }
+                        Construction = GetText(x.Value, "Construction"),
+                        TransformationProcess = GetText(x.Value, "Transformation process"),
+                        UniClass = GetText(x.Value, "uniClass"),
+                        CsiMasterFormat = GetText(x.Value, "csiMasterformat"),
+                        Class = GetText(x.Value, "class"),
+                        ImportedLabel = GetText(x.Value, "Imported label")
+                    } as IOriginalExtras)
                 });
             }
 
