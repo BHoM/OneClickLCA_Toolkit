@@ -46,11 +46,18 @@ namespace BH.Adapter.OneClickLCA
         private OneClickReport PopulateReport(OneClickReport report, TableRow headerRow, List<TableRow> contentRows)
         {
             List<string> headers = headerRow.Content.Select(x => x?.ToString()).ToList();
-            List<List<object>> content = contentRows.Select(x => x.Content).ToList();
+            List<List<string>> content = contentRows.Select(x => x.Content.Select(c => c?.ToString()).ToList()).ToList();
 
-            List<Dictionary<string, string>> entries = contentRows
-                .Select(row => row.Content.Zip(headers, (cell, header) => new { cell, header })
-                                          .ToDictionary(x => x.header, x => x.cell?.ToString()))
+            return PopulateReport(report, headers, content);
+        }
+
+        /***************************************************/
+
+        private OneClickReport PopulateReport(OneClickReport report, List<string> headers, List<List<string>> content)
+        {
+            List<Dictionary<string, string>> entries = content
+                .Select(row => row.Zip(headers, (cell, header) => new { cell, header })
+                                          .ToDictionary(x => x.header, x => x.cell))
                 .ToList();
 
             switch (report?.Indicator)

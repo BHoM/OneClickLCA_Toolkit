@@ -29,9 +29,12 @@ using BH.oM.Adapters.Excel;
 using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
+using ExcelDataReader;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace BH.Adapter.OneClickLCA
 {
@@ -53,10 +56,70 @@ namespace BH.Adapter.OneClickLCA
 
         private IEnumerable<object> _Pull(ReportRequest request)
         {
+            string fileExtension = Path.GetExtension(request.FileName);
+
+            if (fileExtension == ".xls")
+                return PullFromXls(request);
+            else
+                return PullFromXlsx(request);
+        }
+
+        /***************************************************/
+
+        private IEnumerable<object> PullFromXls(ReportRequest request)
+        {
+            // Read the Excel file
+            Dictionary<string, object> metadata = new Dictionary<string, object>();
+            List<string> headers = new List<string>();
+            List<List<string>> content = new List<List<string>>();
+            try
+            {
+                using (FileStream fileStream = new FileStream(Path.Combine(request.Directory, request.FileName), FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(fileStream))
+                    {
+                        // Get metadata
+                        metadata = GetMetaData(reader);
+
+                        // Get headers
+                        reader.Read();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                            headers.Add(reader.GetString(i));
+
+                        // Get the content
+                        while (reader.Read())
+                        {
+                            List<string> row = new List<string>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                                row.Add(reader.GetValue(i)?.ToString());
+                            content.Add(row);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Base.Compute.RecordError($"Failed to read file {request.FileName}. Error: {e.Message}");
+            }
+
+            // Create the report with its metadata
+            OneClickReport report = FillReportMetadata(metadata);
+
+            // Attach any potential additional inputs to the report
+            if (request.AdditionalInputs != null)
+                report.Fragments.Add(request.AdditionalInputs);
+
+            return new List<object> { PopulateReport(report, headers, content) };
+        }
+
+        /***************************************************/
+
+        private IEnumerable<object> PullFromXlsx(ReportRequest request)
+        {
             ExcelAdapter excelAdapter = new ExcelAdapter(new FileSettings { FileName = request.FileName, Directory = request.Directory });
 
             // Pull the meta data
-            CustomObject metadata = excelAdapter.Pull(BH.Engine.Excel.Create.ObjectRequest("", "A1:D2")).FirstOrDefault() as CustomObject;  
+            CustomObject metadata = excelAdapter.Pull(BH.Engine.Excel.Create.ObjectRequest("", "A1:D2")).FirstOrDefault() as CustomObject;
             if (metadata == null)
             {
                 BH.Engine.Base.Compute.RecordError("Failed to pull the metadata from the report. Make sure that the file is in the correct location.");
@@ -76,7 +139,7 @@ namespace BH.Adapter.OneClickLCA
                 return new List<object>();
             }
             int nbRows = headers.Content.FindIndex(x => string.IsNullOrWhiteSpace(x?.ToString()));
-            string cellRange = $"A4:{BH.Engine.Excel.Query.ColumnName(nbRows-1)}";
+            string cellRange = $"A4:{BH.Engine.Excel.Query.ColumnName(nbRows - 1)}";
             headers.Content = headers.Content.Take(nbRows).ToList();
 
             // Get the report content
@@ -109,6 +172,23 @@ namespace BH.Adapter.OneClickLCA
                 report.Indicator = BH.Engine.Base.Compute.ParseEnum<Indicator>(metadata["Indicator name"].ToString());
 
             return report;
+        }
+
+        /***************************************************/
+
+        private Dictionary<string, object> GetMetaData(IExcelDataReader reader)
+        {
+            List<string> keys = new List<string>();
+            reader.Read();
+            for (int i = 0; i < 4; i++)
+                keys.Add(reader.GetString(i));
+
+            List<string> values = new List<string>();
+            reader.Read();
+            for (int i = 0; i < 4; i++)
+                values.Add(reader.GetString(i));
+
+            return keys.Zip(values, (string k, object v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
         }
 
 
