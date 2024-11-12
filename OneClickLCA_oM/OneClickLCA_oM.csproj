@@ -14,6 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="Adapter_oM">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Adapter_oM.dll</HintPath>
+	  <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
     <Reference Include="BHoM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>false</Private>
