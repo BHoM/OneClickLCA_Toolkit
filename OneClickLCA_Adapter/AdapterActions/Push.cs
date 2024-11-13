@@ -119,7 +119,7 @@ namespace BH.Adapter.OneClickLCA
             CellAddress afterCommonCell = BH.Engine.Excel.Create.CellAddress("E1");
 
             // Push the entries without any data tied to an LCA module
-            List<string> entriesHeaders = new List<string> { "Question", "Comment", "ServiceLife", "ResourceType", "Datasource", "YearsOfReplacement", "Thickness" };
+            List<string> entriesHeaders = new List<string> { "OriginalCategory", "Question", "Comment", "ServiceLife", "ResourceType", "Datasource", "YearsOfReplacement", "Thickness" };
             pushItems1.Add(new PushItem { Objects = common, Config = new ExcelPushConfig { Worksheet = "Entries" } });
             pushItems2.Add(new PushItem { Objects = entries.ToList<object>(), Config = new ExcelPushConfig { Worksheet = "Entries", ObjectProperties = entriesHeaders, StartingCell = afterCommonCell } });
 
