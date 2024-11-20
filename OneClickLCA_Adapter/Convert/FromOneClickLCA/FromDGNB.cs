@@ -39,7 +39,7 @@ namespace BH.Adapter.OneClickLCA
         public static RICSCategory FromDGNB(string category)
         {
             int index = category.ToList<char>().FindIndex(x => x >= 65 && x <= 122);
-            string code = category.Substring(0, index).Trim(new char[] { ' ', '.' });
+            string code = category.Split(new char[] { ' ' }).First();
 
             if (m_Mapping_DGNB.ContainsKey(code))
                 return m_Mapping_DGNB[code];
