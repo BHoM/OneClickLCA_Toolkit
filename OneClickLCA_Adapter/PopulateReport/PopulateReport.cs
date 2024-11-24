@@ -23,12 +23,14 @@
 using BH.Adapter;
 using BH.Adapter.Excel;
 using BH.Engine.Adapter;
+using BH.Engine.Base;
 using BH.oM.Adapter;
 using BH.oM.Adapters.Excel;
 using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.SymbolStore;
@@ -75,6 +77,14 @@ namespace BH.Adapter.OneClickLCA
                 case Indicator.WholeLifeCarbonAssessment:
                     return PopulateReport_WLCA(report, entries);
                 default:
+                    {
+                        string message = "This type of report is not supported. The only valid indicators are currently:\n"
+                            + Enum.GetValues(typeof(Indicator)).Cast<Indicator>()
+                                .Where(x => x != Indicator.Undefined)
+                                .Select(x => " - " +  x.ToText())
+                                .Aggregate((a, b) => a + "\n" + b);
+                        BH.Engine.Base.Compute.RecordError(message);
+                    }
                     return report;
             }
         }
