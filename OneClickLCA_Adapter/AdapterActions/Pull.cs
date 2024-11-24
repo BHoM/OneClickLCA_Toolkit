@@ -84,7 +84,13 @@ namespace BH.Adapter.OneClickLCA
                         // Get headers
                         reader.Read();
                         for (int i = 0; i < reader.FieldCount; i++)
-                            headers.Add(reader.GetString(i));
+                        {
+                            string header = reader.GetString(i);
+                            if (header == null)
+                                header = "Column" + i;
+                            headers.Add(header);
+                        }
+                            
 
                         // Get the content
                         while (reader.Read())
