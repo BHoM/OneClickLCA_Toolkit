@@ -65,7 +65,7 @@ namespace BH.Adapter.OneClickLCA
 
                 Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
                 {
-                    ["B4"] = new List<string> { "B4-B4-Abfall" }
+                    ["B4"] = new List<string> { "B4-Abfall" }
                 };
 
                 double factor = additionalInputs.FloorArea * additionalInputs.BuildingLifeExpectancy;
