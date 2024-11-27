@@ -258,6 +258,10 @@ namespace BH.oM.Adapters.OneClickLCA
         [CategoryLevel(3)]
         [DisplayText("4.6 Audio and visual")]
         _4_6,
+        [CategoryCode("5")]
+        [CategoryLevel(0)]
+        [DisplayText("5 Services")]
+        _5,
         [CategoryCode("5.1")]
         [CategoryLevel(1)]
         [DisplayText("5.1 Public Health")]
