@@ -66,7 +66,7 @@ namespace BH.Adapter.OneClickLCA
                     Quantity = GetDouble(first, "User input", double.NaN),
                     QuantityUnit = GetText(first, "Unit"),
                     MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
-                    RICSCategory = Convert.FromRICSv1(GetText(first, "Building Parts")),
+                    RICSCategory = Convert.FromLevelBuildingParts(GetText(first, "Building Parts")),
                     OriginalCategory = GetText(first, "Building Parts"),
                     EnvironmentalMetrics = new List<EnvironmentalMetric>
                     {
