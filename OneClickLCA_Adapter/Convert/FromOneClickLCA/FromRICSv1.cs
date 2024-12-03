@@ -82,7 +82,7 @@ namespace BH.Adapter.OneClickLCA
             ["2.4"] = RICSCategory._2_4,
             ["2.4.1"] = RICSCategory._2_4,
             ["2.4.2"] = RICSCategory._3_2_3,
-            ["2.4.3"] = RICSCategory._2_7_1,
+            ["2.4.3"] = RICSCategory._2_4,
             ["2.4.4"] = RICSCategory._2_4_3,
             ["2.5"] = RICSCategory._2_5,
             ["2.5.1"] = RICSCategory._2_5_1,
@@ -118,7 +118,7 @@ namespace BH.Adapter.OneClickLCA
             ["4.1.6"] = RICSCategory._4,
             ["4.1.7"] = RICSCategory._4_1,
             ["4.1.8"] = RICSCategory._4_1,
-            ["5"] = RICSCategory._5_1,
+            ["5"] = RICSCategory._5,
             ["5.1"] = RICSCategory._5_1,
             ["5.1.1"] = RICSCategory._5_1_1,
             ["5.1.2"] = RICSCategory._5_1_1,
@@ -233,6 +233,7 @@ namespace BH.Adapter.OneClickLCA
             ["0.3"] = RICSCategory._0_1_2_1,
             ["0.4"] = RICSCategory._0_1_2_3,
             ["0.5"] = RICSCategory._0_1_2_4
+
         };
 
         /***************************************************/

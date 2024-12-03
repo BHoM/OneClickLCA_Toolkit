@@ -149,8 +149,8 @@ namespace BH.Adapter.OneClickLCA
             ["21-07 20 20"] = RICSCategory._8_1_1,
             ["21-07 20 30"] = RICSCategory._8_1_1,
             ["21-07 20 40"] = RICSCategory._8_1_1,
-            ["21-07 20 50"] = RICSCategory._8_1_1,
-            ["21-07 20 60"] = RICSCategory._8_1,
+            ["21-07 20 50"] = RICSCategory._8_2,
+            ["21-07 20 60"] = RICSCategory._8_2,
             ["21-07 20 80"] = RICSCategory._8_2
         };
 
