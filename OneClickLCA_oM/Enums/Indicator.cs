@@ -41,8 +41,16 @@ namespace BH.oM.Adapters.OneClickLCA
         DGNB,
         [DisplayText("LCA for LEED, Int´l (CML)")]
         LEED_Intl,
+        [DisplayText("Level(s) life-cycle assessment (EN15804 +A1)")]
+        Levels_Assessment_A1,
+        [DisplayText("Level(s) life-cycle assessment (EN15804 +A2)")]
+        Levels_Assessment_A2,
+        [DisplayText("Level(s) life-cycle assessment (EN15804 +A2) (new version available)")]
+        Levels_Assessment_A2_NewVersionAvailable,
         [DisplayText("Level(s) life-cycle carbon (EN15804 +A1)")]
-        Levels,
+        Levels_Carbon_A1,
+        [DisplayText("Level(s) life-cycle carbon (EN15804 +A1/+A2)")]
+        Levels_Carbon_A1A2,
         [DisplayText("LCA for LEED, US (TRACI)")]
         LEED_US
     }

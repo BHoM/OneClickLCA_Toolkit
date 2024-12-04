@@ -72,7 +72,11 @@ namespace BH.Adapter.OneClickLCA
                     return PopulateReport_LEEDIntl(report, entries);
                 case Indicator.LEED_US:
                     return PopulateReport_LEEDUS(report, entries);
-                case Indicator.Levels:
+                case Indicator.Levels_Carbon_A1:
+                case Indicator.Levels_Carbon_A1A2:
+                case Indicator.Levels_Assessment_A1:
+                case Indicator.Levels_Assessment_A2:
+                case Indicator.Levels_Assessment_A2_NewVersionAvailable:
                     return PopulateReport_Levels(report, entries);
                 case Indicator.WholeLifeCarbonAssessment:
                     return PopulateReport_WLCA(report, entries);
@@ -220,6 +224,66 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
+        private ClimateChangeFossilMetric GetClimateChangeFossil(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        {
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
+
+            return new ClimateChangeFossilMetric(
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
+            );
+        }
+
+        /***************************************************/
+
+        private ClimateChangeLandUseMetric GetClimateChangeLandUse(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        {
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
+
+            return new ClimateChangeLandUseMetric(
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
+            );
+        }
+
+        /***************************************************/
+
         private AcidificationMetric GetAcidification(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
@@ -310,6 +374,96 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
+        private EutrophicationAquaticFreshwaterMetric GetEutrophicationFreshWater(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        {
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
+
+            return new EutrophicationAquaticFreshwaterMetric(
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
+            );
+        }
+
+        /***************************************************/
+
+        private EutrophicationAquaticMarineMetric GetEutrophicationMarine(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        {
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
+
+            return new EutrophicationAquaticMarineMetric(
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
+            );
+        }
+
+        /***************************************************/
+
+        private EutrophicationTerrestrialMetric GetEutrophicationTerrestrial(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        {
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
+
+            return new EutrophicationTerrestrialMetric(
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
+            );
+        }
+
+        /***************************************************/
+
         private OzoneDepletionMetric GetOzoneDepletion(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
         {
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
@@ -375,6 +529,36 @@ namespace BH.Adapter.OneClickLCA
             Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
 
             return new PhotochemicalOzoneCreationTRACIMetric(
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                GetDouble(totals, "A1-A3", double.NaN),
+                GetDouble(totals, "A4", double.NaN),
+                GetDouble(totals, "A5", double.NaN),
+                GetDouble(totals, "B1", double.NaN),
+                GetDouble(totals, "B2", double.NaN),
+                GetDouble(totals, "B3", double.NaN),
+                GetDouble(totals, "B4", double.NaN),
+                GetDouble(totals, "B5", double.NaN),
+                GetDouble(totals, "B6", double.NaN),
+                GetDouble(totals, "B7", double.NaN),
+                GetDouble(totals, "B1-B7", double.NaN),
+                GetDouble(totals, "C1", double.NaN),
+                GetDouble(totals, "C2", double.NaN),
+                GetDouble(totals, "C3", double.NaN),
+                GetDouble(totals, "C4", double.NaN),
+                GetDouble(totals, "C1-C4", double.NaN),
+                GetDouble(totals, "D", double.NaN)
+            );
+        }
+
+        /***************************************************/
+
+        private PhotochemicalOzoneCreationMetric GetPhotochemicalOzoneCreation(Dictionary<string, Dictionary<string, string>> sections, string propName, Dictionary<string, List<string>> mapping = null, double factor = 1)
+        {
+            Dictionary<string, double> totals = GetTotals(sections, propName, mapping, factor);
+
+            return new PhotochemicalOzoneCreationMetric(
                 double.NaN,
                 double.NaN,
                 double.NaN,

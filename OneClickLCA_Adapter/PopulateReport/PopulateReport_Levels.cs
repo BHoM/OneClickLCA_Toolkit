@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Collections.Specialized.BitVector32;
 
 namespace BH.Adapter.OneClickLCA
 {
@@ -68,11 +69,7 @@ namespace BH.Adapter.OneClickLCA
                     MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
                     RICSCategory = Convert.FromLevelBuildingParts(GetText(first, "Building Parts")),
                     OriginalCategory = GetText(first, "Building Parts"),
-                    EnvironmentalMetrics = new List<EnvironmentalMetric>
-                    {
-                        GetGWP(group, "Global warming kg CO₂e", mapping),
-                        GetBiogenicCarbon(group, "Biogenic carbon storage kg CO₂e bio", mapping),
-                    },
+                    EnvironmentalMetrics = GetEnvironmentalMetrics(group, mapping, report.Indicator),
                     Question = GetText(first, "Question"),
                     Comment = GetText(first, "Comment"),
                     ServiceLife = GetText(first, "Service life"),
@@ -81,19 +78,128 @@ namespace BH.Adapter.OneClickLCA
                     YearsOfReplacement = GetDouble(first, "Years of replacement", double.NaN),
                     Name = GetText(first, "Name"),
                     Thickness = GetDouble(first, "Thickness mm", double.NaN) / 1000,
-                    OriginalExtras = group.ToDictionary(x => x.Key, x => new OriginalExtras_Levels
-                    {
-                        Construction = GetText(x.Value, "Construction"),
-                        TransformationProcess = GetText(x.Value, "Transformation process"),
-                        UniClass = GetText(x.Value, "uniClass"),
-                        CsiMasterFormat = GetText(x.Value, "csiMasterformat"),
-                        Class = GetText(x.Value, "class"),
-                        ImportedLabel = GetText(x.Value, "Imported label")
-                    } as IOriginalExtras)
+                    OriginalExtras = group.ToDictionary(x => x.Key, x => GetOriginalExtras(x.Value, report.Indicator) as IOriginalExtras)
                 });
             }
 
             return report;
+        }
+
+        /***************************************************/
+
+        List<EnvironmentalMetric> GetEnvironmentalMetrics(Dictionary<string, Dictionary<string, string>> sections, Dictionary<string, List<string>> mapping, Indicator indicator)
+        {
+            return GetCarbonMetrics(sections, mapping, indicator)
+                .Concat(GetOtherMetrics(sections, mapping, indicator))
+                .ToList();
+        }
+
+        /***************************************************/
+
+        List<EnvironmentalMetric> GetCarbonMetrics(Dictionary<string, Dictionary<string, string>> sections, Dictionary<string, List<string>> mapping, Indicator indicator)
+        {
+            switch (indicator)
+            {
+                case Indicator.Levels_Assessment_A2:
+                case Indicator.Levels_Assessment_A2_NewVersionAvailable:
+                    return new List<EnvironmentalMetric>
+                     {
+                        GetGWP(sections, "Global Warming Potential total kg CO₂e", mapping),
+                        GetBiogenicCarbon(sections, "Global Warming Potential biogenic kg CO₂e", mapping),
+                        GetClimateChangeFossil(sections, "Global Warming Potential fossil kg CO₂e", mapping),
+                        GetClimateChangeLandUse(sections, "Global Warming Potential, LULUC kg CO₂e", mapping)
+                     };
+                case Indicator.Levels_Assessment_A1:
+                case Indicator.Levels_Carbon_A1:
+                    return new List<EnvironmentalMetric>
+                     {
+                        GetGWP(sections, "Global warming kg CO₂e", mapping),
+                        GetBiogenicCarbon(sections, "Biogenic carbon storage kg CO₂e bio", mapping)
+                     };
+                case Indicator.Levels_Carbon_A1A2:
+                    return new List<EnvironmentalMetric>
+                     {
+                        GetGWP(sections, "Global Warming Potential total kg CO₂e", mapping),
+                        GetBiogenicCarbon(sections, "Global Warming Potential biogenic kg CO₂e", mapping),
+                        GetClimateChangeLandUse(sections, "Global Warming Potential, LULUC kg CO₂e", mapping)
+                     };
+                default:
+                    return new List<EnvironmentalMetric>();
+            }
+        }
+
+        /***************************************************/
+
+        List<EnvironmentalMetric> GetOtherMetrics(Dictionary<string, Dictionary<string, string>> sections, Dictionary<string, List<string>> mapping, Indicator indicator)
+        {
+            switch (indicator)
+            {
+                case Indicator.Levels_Assessment_A2:
+                case Indicator.Levels_Assessment_A2_NewVersionAvailable:
+                    return new List<EnvironmentalMetric>
+                     {
+                        GetOzoneDepletion(sections, "Depletion potential of the stratospheric ozone layer kg CFC11e", mapping),
+                        GetAcidification(sections, "Acidification potential, Accumulated Exceedance mol H+ eq.", mapping),
+                        GetEutrophicationFreshWater(sections, "Eutrophication fresh water kg P eq.", mapping),
+                        GetEutrophicationMarine(sections, "Eutrophication aquatic marine kg N eq.", mapping),
+                        GetEutrophicationTerrestrial(sections, "Eutrophication terrestrial mol N eq.", mapping),
+                        GetPhotochemicalOzoneCreation(sections, "Formation potential of tropospheric ozone kg NMVOC eq.", mapping),
+                        GetAbioticDepletionPotentialNonFossil(sections, "Abiotic depletion potential (ADP-elements) for non fossil resources (+A2) kg Sbe", mapping),
+                        GetAbioticDepletionPotentialFossil(sections, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources (+A2) MJ", mapping, 1000000)
+                     };
+                case Indicator.Levels_Assessment_A1:
+                    return new List<EnvironmentalMetric>
+                     {
+                        GetOzoneDepletion(sections, "Ozone Depletion kg CFC11e", mapping),
+                        GetAcidification(sections, "Acidification kg SO₂e", mapping),
+                        GetEutrophicationCML(sections, "Eutrophication kg PO₄e", mapping),
+                        GetPhotochemicalOzoneCreationCML(sections, "Formation of ozone of lower atmosphere kg Ethenee", mapping),
+                        GetAbioticDepletionPotentialNonFossil(sections, "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe", mapping),
+                        GetAbioticDepletionPotentialFossil(sections, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ", mapping, 1000000)
+                     };
+                case Indicator.Levels_Carbon_A1:
+                case Indicator.Levels_Carbon_A1A2:
+                default:
+                    return new List<EnvironmentalMetric>();
+            }
+        }
+
+        private OriginalExtras_Levels GetOriginalExtras(Dictionary<string, string> section, Indicator indicator)
+        {
+            OriginalExtras_Levels extras = new OriginalExtras_Levels
+            {
+                Construction = GetText(section, "Construction"),
+                TransformationProcess = GetText(section, "Transformation process"),
+                UniClass = GetText(section, "uniClass"),
+                CsiMasterFormat = GetText(section, "csiMasterformat"),
+                Class = GetText(section, "class"),
+                ImportedLabel = GetText(section, "Imported label")
+            };
+
+            switch (indicator)
+            {
+                case Indicator.Levels_Assessment_A2:
+                case Indicator.Levels_Assessment_A2_NewVersionAvailable:
+                    extras.WaterConsumption = GetDouble(section, "Water use m³ deprived");
+                    break;
+                case Indicator.Levels_Assessment_A1:
+                    extras.RenewablePrimaryEnergyUseAsRawmaterials = GetDouble(section, "Use of renewable primary energy resources as raw materials MJ") * 1000000;
+                    extras.PrimaryEnergyUseExRawMaterials = GetDouble(section, "Total use of primary energy ex. raw materials MJ") * 1000000;
+                    extras.RenewablePrimaryEnergyUse = GetDouble(section, "Total use of renewable primary energy MJ") * 1000000;
+                    extras.NonRenewablePrimaryEnergyUse = GetDouble(section, "Total use of non renewable primary energy MJ") * 1000000;
+                    extras.NetFreshWaterUse = GetDouble(section, "Use of net fresh water m³");
+                    extras.Energy = GetDouble(section, "Energy kWh") * 3600000;
+                    extras.WaterConsumption = GetDouble(section, "Water consumption m³");
+                    extras.DistanceTraveled = GetDouble(section, "Distance traveled km") * 1000;
+                    extras.FuelConsumption = GetDouble(section, "Fuel consumption litres") * 0.001;
+                    break;
+                case Indicator.Levels_Carbon_A1:
+                case Indicator.Levels_Carbon_A1A2:
+                default:
+                    break;
+            }
+
+            return extras;
         }
 
         /***************************************************/

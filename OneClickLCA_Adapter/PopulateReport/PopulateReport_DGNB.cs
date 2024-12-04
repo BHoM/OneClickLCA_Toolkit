@@ -85,7 +85,7 @@ namespace BH.Adapter.OneClickLCA
                         GetEutrophicationCML(group, "Eutrophication kg PO₄e/m²/a", mapping, factor),
                         GetOzoneDepletion(group, "Ozone Depletion kg CFC11e/m²/a", mapping, factor),
                         GetPhotochemicalOzoneCreationCML(group, "Formation of ozone of lower atmosphere kg Ethenee/m²/a", mapping, factor),
-                        GetAbioticDepletionPotentialFossil(group, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ/m²/a", mapping, factor),
+                        GetAbioticDepletionPotentialFossil(group, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ/m²/a", mapping, factor * 1000000),
                         GetAbioticDepletionPotentialNonFossil(group, "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe/m²/a", mapping, factor)
                     },
                     Question = GetText(first, "Question"),

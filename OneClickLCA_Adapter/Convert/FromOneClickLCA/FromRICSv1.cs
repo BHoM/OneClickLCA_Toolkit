@@ -233,7 +233,6 @@ namespace BH.Adapter.OneClickLCA
             ["0.3"] = RICSCategory._0_1_2_1,
             ["0.4"] = RICSCategory._0_1_2_3,
             ["0.5"] = RICSCategory._0_1_2_4
-
         };
 
         /***************************************************/

@@ -52,6 +52,42 @@ namespace BH.oM.Adapters.OneClickLCA
         [Description("TODO")]
         [DisplayText("Imported label")]
         public string ImportedLabel { get; set; } = "";
+
+        [Description("TODO")]
+        [DisplayText("Use of renewable primary energy resources as raw materials MJ")]
+        public double RenewablePrimaryEnergyUseAsRawmaterials { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Total use of primary energy ex. raw materials MJ")]
+        public double PrimaryEnergyUseExRawMaterials { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Total use of renewable primary energy MJ")]
+        public double RenewablePrimaryEnergyUse { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Total use of non renewable primary energy MJ")]
+        public double NonRenewablePrimaryEnergyUse { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Use of net fresh water m³")]
+        public double NetFreshWaterUse { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Energy kWh")]
+        public double Energy { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Water consumption m³")]
+        public double WaterConsumption { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Distance traveled km")]
+        public double DistanceTraveled { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Fuel consumption litres")]
+        public double FuelConsumption { get; set; } = 0;
     }
 }
 
