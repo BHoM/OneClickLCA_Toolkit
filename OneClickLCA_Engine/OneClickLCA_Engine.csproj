@@ -28,6 +28,9 @@
 	  <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+    <Reference Include="LifeCycleAssessment_Engine">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\LifeCycleAssessment_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="LifeCycleAssessment_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\LifeCycleAssessment_oM.dll</HintPath>
 	  <Private>false</Private>

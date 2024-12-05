@@ -22,6 +22,7 @@
 
 using BH.Adapter;
 using BH.Adapter.Excel;
+using BH.Adapter.OneClickLCA.Objects;
 using BH.Engine.Adapter;
 using BH.oM.Adapter;
 using BH.oM.Adapters.Excel;
@@ -29,6 +30,7 @@ using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,6 +57,8 @@ namespace BH.Adapter.OneClickLCA
             foreach (var group in groups)
             {
                 Dictionary<string, string> first = group.Values.First();
+                string materialName = GetText(first, "Resource");
+                string datasource = GetText(first, "Datasource");
 
                 Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
                 {
@@ -63,18 +67,18 @@ namespace BH.Adapter.OneClickLCA
 
                 report.Entries.Add(new ReportEntry
                 {
-                    Resource = GetText(first, "Resource"),
+                    Resource = materialName,
                     Quantity = GetDouble(first, "User input", double.NaN),
                     QuantityUnit = GetText(first, "Unit"),
                     MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
                     RICSCategory = Convert.FromLevelBuildingParts(GetText(first, "Building Parts")),
                     OriginalCategory = GetText(first, "Building Parts"),
-                    EnvironmentalMetrics = GetEnvironmentalMetrics(group, mapping, report.Indicator),
+                    EnvironmentalMetrics = GetEnvironmentalMetrics(group, mapping, report.Indicator, materialName, datasource),
                     Question = GetText(first, "Question"),
                     Comment = GetText(first, "Comment"),
                     ServiceLife = GetText(first, "Service life"),
                     ResourceType = GetText(first, "Resource type"),
-                    Datasource = GetText(first, "Datasource"),
+                    Datasource = datasource,
                     YearsOfReplacement = GetDouble(first, "Years of replacement", double.NaN),
                     Name = GetText(first, "Name"),
                     Thickness = GetDouble(first, "Thickness mm", double.NaN) / 1000,
@@ -87,82 +91,87 @@ namespace BH.Adapter.OneClickLCA
 
         /***************************************************/
 
-        List<EnvironmentalMetric> GetEnvironmentalMetrics(Dictionary<string, Dictionary<string, string>> sections, Dictionary<string, List<string>> mapping, Indicator indicator)
+        private List<MaterialResult> GetEnvironmentalMetrics(Dictionary<string, Dictionary<string, string>> sections, Dictionary<string, List<string>> mapping, Indicator indicator, string materialName = "", string epdName = "")
         {
-            return GetCarbonMetrics(sections, mapping, indicator)
-                .Concat(GetOtherMetrics(sections, mapping, indicator))
+            return GetCarbonAccessors(indicator)
+                .Concat(GetOtherMetrics(indicator))
+                .Select(x => GetMaterialResult(x.Type, sections, x.Name, materialName, epdName, mapping, x.Factor))
                 .ToList();
         }
 
         /***************************************************/
 
-        List<EnvironmentalMetric> GetCarbonMetrics(Dictionary<string, Dictionary<string, string>> sections, Dictionary<string, List<string>> mapping, Indicator indicator)
+        private List<MetricAccessor> GetCarbonAccessors(Indicator indicator)
         {
             switch (indicator)
             {
                 case Indicator.Levels_Assessment_A2:
                 case Indicator.Levels_Assessment_A2_NewVersionAvailable:
-                    return new List<EnvironmentalMetric>
-                     {
-                        GetGWP(sections, "Global Warming Potential total kg CO₂e", mapping),
-                        GetBiogenicCarbon(sections, "Global Warming Potential biogenic kg CO₂e", mapping),
-                        GetClimateChangeFossil(sections, "Global Warming Potential fossil kg CO₂e", mapping),
-                        GetClimateChangeLandUse(sections, "Global Warming Potential, LULUC kg CO₂e", mapping)
-                     };
+                    return new List<MetricAccessor>
+                    {
+                        new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "Global Warming Potential total kg CO₂e"},
+                        new MetricAccessor { Type = typeof(ClimateChangeBiogenicMaterialResult), Name = "Global Warming Potential biogenic kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeFossilMaterialResult), Name = "Global Warming Potential fossil kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeLandUseMaterialResult), Name = "Global Warming Potential, LULUC kg CO₂e" }
+                    };
                 case Indicator.Levels_Assessment_A1:
                 case Indicator.Levels_Carbon_A1:
-                    return new List<EnvironmentalMetric>
-                     {
-                        GetGWP(sections, "Global warming kg CO₂e", mapping),
-                        GetBiogenicCarbon(sections, "Biogenic carbon storage kg CO₂e bio", mapping)
-                     };
+                    return new List<MetricAccessor>
+                    {
+                        new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "TOTAL kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeBiogenicMaterialResult), Name = "Biogenic carbon storage kg CO₂e bio" }
+                    };
                 case Indicator.Levels_Carbon_A1A2:
-                    return new List<EnvironmentalMetric>
-                     {
-                        GetGWP(sections, "Global Warming Potential total kg CO₂e", mapping),
-                        GetBiogenicCarbon(sections, "Global Warming Potential biogenic kg CO₂e", mapping),
-                        GetClimateChangeLandUse(sections, "Global Warming Potential, LULUC kg CO₂e", mapping)
-                     };
+                    return new List<MetricAccessor>
+                    {
+                        new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "Global Warming Potential total kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeBiogenicMaterialResult), Name = "Global Warming Potential biogenic kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeLandUseMaterialResult), Name = "Global Warming Potential, LULUC kg CO₂e" }
+                    };
                 default:
-                    return new List<EnvironmentalMetric>();
+                    return new List<MetricAccessor>();
             }
         }
 
         /***************************************************/
 
-        List<EnvironmentalMetric> GetOtherMetrics(Dictionary<string, Dictionary<string, string>> sections, Dictionary<string, List<string>> mapping, Indicator indicator)
+        private List<MetricAccessor> GetOtherMetrics(Indicator indicator)
         {
             switch (indicator)
             {
                 case Indicator.Levels_Assessment_A2:
                 case Indicator.Levels_Assessment_A2_NewVersionAvailable:
-                    return new List<EnvironmentalMetric>
-                     {
-                        GetOzoneDepletion(sections, "Depletion potential of the stratospheric ozone layer kg CFC11e", mapping),
-                        GetAcidification(sections, "Acidification potential, Accumulated Exceedance mol H+ eq.", mapping),
-                        GetEutrophicationFreshWater(sections, "Eutrophication fresh water kg P eq.", mapping),
-                        GetEutrophicationMarine(sections, "Eutrophication aquatic marine kg N eq.", mapping),
-                        GetEutrophicationTerrestrial(sections, "Eutrophication terrestrial mol N eq.", mapping),
-                        GetPhotochemicalOzoneCreation(sections, "Formation potential of tropospheric ozone kg NMVOC eq.", mapping),
-                        GetAbioticDepletionPotentialNonFossil(sections, "Abiotic depletion potential (ADP-elements) for non fossil resources (+A2) kg Sbe", mapping),
-                        GetAbioticDepletionPotentialFossil(sections, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources (+A2) MJ", mapping, 1000000)
+                    return new List<MetricAccessor>
+                    {
+                        new MetricAccessor { Type = typeof(OzoneDepletionMaterialResult), Name = "Depletion potential of the stratospheric ozone layer kg CFC11e" },
+                        new MetricAccessor { Type = typeof(AcidificationMaterialResult), Name = "Acidification potential, Accumulated Exceedance mol H+ eq." },
+                        new MetricAccessor { Type = typeof(EutrophicationAquaticFreshwaterMaterialResult), Name = "Eutrophication fresh water kg P eq." },
+                        new MetricAccessor { Type = typeof(EutrophicationAquaticMarineMaterialResult), Name = "Eutrophication aquatic marine kg N eq." },
+                        new MetricAccessor { Type = typeof(EutrophicationTerrestrialMaterialResult), Name = "Eutrophication terrestrial mol N eq." },
+                        new MetricAccessor { Type = typeof(PhotochemicalOzoneCreationMaterialResult), Name = "Formation potential of tropospheric ozone kg NMVOC eq." },
+                        new MetricAccessor { Type = typeof(AbioticDepletionMineralsAndMetalsMaterialResult), Name = "Abiotic depletion potential (ADP-elements) for non fossil resources (+A2) kg Sbe" },
+                        new MetricAccessor { Type = typeof(AbioticDepletionFossilResourcesMaterialResult), Name = "Abiotic depletion potential (ADP-fossil fuels) for fossil resources (+A2) MJ", Factor = 1000000 }
+                        
                      };
                 case Indicator.Levels_Assessment_A1:
-                    return new List<EnvironmentalMetric>
-                     {
-                        GetOzoneDepletion(sections, "Ozone Depletion kg CFC11e", mapping),
-                        GetAcidification(sections, "Acidification kg SO₂e", mapping),
-                        GetEutrophicationCML(sections, "Eutrophication kg PO₄e", mapping),
-                        GetPhotochemicalOzoneCreationCML(sections, "Formation of ozone of lower atmosphere kg Ethenee", mapping),
-                        GetAbioticDepletionPotentialNonFossil(sections, "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe", mapping),
-                        GetAbioticDepletionPotentialFossil(sections, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ", mapping, 1000000)
+                    return new List<MetricAccessor>
+                    {
+                        new MetricAccessor { Type = typeof(OzoneDepletionMaterialResult), Name = "Ozone Depletion kg CFC11e" },
+                        new MetricAccessor { Type = typeof(AcidificationMaterialResult), Name = "Acidification kg SO₂e" },
+                        new MetricAccessor { Type = typeof(EutrophicationCMLMaterialResult), Name = "Eutrophication kg PO₄e" },
+                        new MetricAccessor { Type = typeof(PhotochemicalOzoneCreationCMLMaterialResult), Name = "Formation of ozone of lower atmosphere kg Ethenee" },
+                        new MetricAccessor { Type = typeof(AbioticDepletionMineralsAndMetalsMaterialResult), Name = "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe" },
+                        new MetricAccessor { Type = typeof(AbioticDepletionFossilResourcesMaterialResult), Name = "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ", Factor = 1000000 }
+
                      };
                 case Indicator.Levels_Carbon_A1:
                 case Indicator.Levels_Carbon_A1A2:
                 default:
-                    return new List<EnvironmentalMetric>();
+                    return new List<MetricAccessor>();
             }
         }
+
+        /***************************************************/
 
         private OriginalExtras_Levels GetOriginalExtras(Dictionary<string, string> section, Indicator indicator)
         {

@@ -22,6 +22,7 @@
 
 using BH.Adapter;
 using BH.Adapter.Excel;
+using BH.Adapter.OneClickLCA.Objects;
 using BH.Engine.Adapter;
 using BH.oM.Adapter;
 using BH.oM.Adapters.Excel;
@@ -29,6 +30,7 @@ using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,34 +56,38 @@ namespace BH.Adapter.OneClickLCA
             foreach (var group in groups)
             {
                 Dictionary<string, string> first = group.Values.First();
+                string materialName = GetText(first, "Resource");
+                string datasource = GetText(first, "Datasource");
 
                 Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
                 {
                     ["B4"] = new List<string> { "B4-B5" }
                 };
 
+                List<MetricAccessor> metricAccessors = new List<MetricAccessor>
+                {
+                    new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "Global warming kg CO₂e" },
+                    new MetricAccessor { Type = typeof(ClimateChangeBiogenicMaterialResult), Name = "Biogenic carbon storage kg CO₂e bio" },
+                    new MetricAccessor { Type = typeof(AcidificationMaterialResult), Name = "Acidification kg SO₂e" },
+                    new MetricAccessor { Type = typeof(EutrophicationTRACIMaterialResult), Name = "Eutrophication kg Ne" },
+                    new MetricAccessor { Type = typeof(OzoneDepletionMaterialResult), Name = "Ozone Depletion kg CFC11e" },
+                    new MetricAccessor { Type = typeof(PhotochemicalOzoneCreationTRACIMaterialResult), Name = "Formation of tropospheric ozone kg O3e" }
+                };
+
                 report.Entries.Add(new ReportEntry
                 {
-                    Resource = GetText(first, "Resource"),
+                    Resource = materialName,
                     Quantity = GetDouble(first, "User input", double.NaN),
                     QuantityUnit = GetText(first, "Unit"),
                     MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
                     RICSCategory = Convert.FromOmniClass(GetText(first, "Omniclass")),
                     OriginalCategory = GetText(first, "Omniclass"),
-                    EnvironmentalMetrics = new List<EnvironmentalMetric>
-                    {
-                        GetGWP(group, "Global warming kg CO₂e", mapping),
-                        GetBiogenicCarbon(group, "Biogenic carbon storage kg CO₂e bio", mapping),
-                        GetAcidification(group, "Acidification kg SO₂e", mapping),
-                        GetEutrophicationTRACI(group, "Eutrophication kg Ne", mapping),
-                        GetOzoneDepletion(group, "Ozone Depletion kg CFC11e", mapping),
-                        GetPhotochemicalOzoneCreationTRACI(group, "Formation of tropospheric ozone kg O3e", mapping)
-                    },
+                    EnvironmentalMetrics = metricAccessors.Select(x => GetMaterialResult(x.Type, group, x.Name, materialName, datasource, mapping)).ToList(),
                     Question = GetText(first, "Question"),
                     Comment = GetText(first, "Comment"),
                     ServiceLife = GetText(first, "Service life"),
                     ResourceType = GetText(first, "Resource type"),
-                    Datasource = GetText(first, "Datasource"),
+                    Datasource = datasource,
                     YearsOfReplacement = GetDouble(first, "Years of replacement", double.NaN),
                     Name = GetText(first, "Name"),
                     Thickness = GetDouble(first, "Thickness in", double.NaN) * 0.0254,

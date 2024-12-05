@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
@@ -59,7 +60,7 @@ namespace BH.oM.Adapters.OneClickLCA
 
         [Description("TODO")]
         [DisplayText("Environmental metrics")]
-        public List<EnvironmentalMetric> EnvironmentalMetrics { get; set; } = new List<EnvironmentalMetric>();
+        public List<MaterialResult> EnvironmentalMetrics { get; set; } = new List<MaterialResult>();
 
         [Description("TODO")]
         public string Question { get; set; } = "";

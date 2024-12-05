@@ -22,6 +22,7 @@
 
 using BH.Adapter;
 using BH.Adapter.Excel;
+using BH.Adapter.OneClickLCA.Objects;
 using BH.Engine.Adapter;
 using BH.Engine.Base;
 using BH.oM.Adapter;
@@ -30,6 +31,8 @@ using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -62,6 +65,8 @@ namespace BH.Adapter.OneClickLCA
             foreach (var group in groups)
             {
                 Dictionary<string, string> first = group.Values.First();
+                string materialName = GetText(first, "Resource");
+                string datasource = GetText(first, "Datasource");
 
                 Dictionary<string, List<string>> mapping = new Dictionary<string, List<string>>
                 {
@@ -70,29 +75,31 @@ namespace BH.Adapter.OneClickLCA
 
                 double factor = additionalInputs.FloorArea * additionalInputs.BuildingLifeExpectancy;
 
+                List<MetricAccessor> metricAccessors = new List<MetricAccessor>
+                {
+                    new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "Global warming kg CO₂e/m²/a", Factor = factor },
+                    new MetricAccessor { Type = typeof(AcidificationMaterialResult), Name = "Acidification kg SO₂e/m²/a", Factor = factor },
+                    new MetricAccessor { Type = typeof(EutrophicationCMLMaterialResult), Name = "Eutrophication kg PO₄e/m²/a", Factor = factor },
+                    new MetricAccessor { Type = typeof(OzoneDepletionMaterialResult), Name = "Ozone Depletion kg CFC11e/m²/a", Factor = factor },
+                    new MetricAccessor { Type = typeof(PhotochemicalOzoneCreationCMLMaterialResult), Name = "Formation of ozone of lower atmosphere kg Ethenee/m²/a", Factor = factor },
+                    new MetricAccessor { Type = typeof(AbioticDepletionFossilResourcesMaterialResult), Name = "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ/m²/a", Factor = factor * 1000000 },
+                    new MetricAccessor { Type = typeof(AbioticDepletionMineralsAndMetalsMaterialResult), Name = "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe/m²/a", Factor = factor }
+                };
+
                 report.Entries.Add(new ReportEntry
                 {
-                    Resource = GetText(first, "Resource"),
+                    Resource = materialName,
                     Quantity = GetDouble(first, "User input", double.NaN),
                     QuantityUnit = GetText(first, "Unit"),
                     MassOfRawMaterials = group.ToDictionary(x => x.Key, x => GetDouble(x.Value, "Mass of raw materials kg", double.NaN)),
                     RICSCategory = Convert.FromDGNB(GetText(first, "KG DIN 276")),
                     OriginalCategory = GetText(first, "KG DIN 276"),
-                    EnvironmentalMetrics = new List<EnvironmentalMetric>
-                    {
-                        GetGWP(group, "Global warming kg CO₂e/m²/a", mapping, factor),
-                        GetAcidification(group, "Acidification kg SO₂e/m²/a", mapping, factor),
-                        GetEutrophicationCML(group, "Eutrophication kg PO₄e/m²/a", mapping, factor),
-                        GetOzoneDepletion(group, "Ozone Depletion kg CFC11e/m²/a", mapping, factor),
-                        GetPhotochemicalOzoneCreationCML(group, "Formation of ozone of lower atmosphere kg Ethenee/m²/a", mapping, factor),
-                        GetAbioticDepletionPotentialFossil(group, "Abiotic depletion potential (ADP-fossil fuels) for fossil resources MJ/m²/a", mapping, factor * 1000000),
-                        GetAbioticDepletionPotentialNonFossil(group, "Abiotic depletion potential (ADP-elements) for non fossil resources kg Sbe/m²/a", mapping, factor)
-                    },
+                    EnvironmentalMetrics = metricAccessors.Select(x => GetMaterialResult(x.Type, group, x.Name, materialName, datasource, mapping, x.Factor )).ToList(),
                     Question = GetText(first, "Question"),
                     Comment = GetText(first, "Comment"),
                     ServiceLife = GetText(first, "Service life"),
                     ResourceType = GetText(first, "Resource type"),
-                    Datasource = GetText(first, "Datasource"),
+                    Datasource = datasource,
                     YearsOfReplacement = GetDouble(first, "Years of replacement", double.NaN),
                     OriginalExtras = group.ToDictionary(x => x.Key, x => new OriginalExtras_DGNB
                     {

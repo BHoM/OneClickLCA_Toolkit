@@ -25,6 +25,7 @@ using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.OneClickLCA.Enums;
 using System;
 using System.Collections.Generic;
@@ -44,10 +45,10 @@ namespace BH.Engine.Adapters.OneClickLCA
         [Input("report", "OneClick LCA report.")]
         [Input("categoryLevel", "category level to calculate the totals over. If left at 0, the totals will be calculated for all categories found in the input regardless of their level.")]
         [Output("totals", "Total for each environmental metric, LCA module and RICS category")]
-        public static Dictionary<RICSCategory, List<EnvironmentalMetric>> TotalPerCategory(this OneClickReport report, int categoryLevel = 0)
+        public static Dictionary<RICSCategory, List<MaterialResult>> TotalPerCategory(this OneClickReport report, int categoryLevel = 0)
         {
             if (report == null)
-                return new Dictionary<RICSCategory, List<EnvironmentalMetric>>();
+                return new Dictionary<RICSCategory, List<MaterialResult>>();
             else
                 return report.Entries.TotalPerCategory(categoryLevel);
         }
@@ -58,7 +59,7 @@ namespace BH.Engine.Adapters.OneClickLCA
         [Input("entries", "OneClick LCA report entries.")]
         [Input("categoryLevel", "category level to calculate the totals over. If left at 0, the totals will be calculated for all categories found in the input regardless of their level.")]
         [Output("totals", "Total for each environmental metric, LCA module and RICS category")]
-        public static Dictionary<RICSCategory, List<EnvironmentalMetric>> TotalPerCategory(this List<ReportEntry> entries, int categoryLevel = 0)
+        public static Dictionary<RICSCategory, List<MaterialResult>> TotalPerCategory(this List<ReportEntry> entries, int categoryLevel = 0)
         {
             IEnumerable<IGrouping<RICSCategory, ReportEntry>> groups;
             if (categoryLevel > 0)
@@ -79,9 +80,9 @@ namespace BH.Engine.Adapters.OneClickLCA
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static EnvironmentalMetric GetTotal(this IEnumerable<EnvironmentalMetric> metrics, Type type)
+        private static MaterialResult GetTotal(this IEnumerable<MaterialResult> metrics, Type type)
         {
-            return Activator.CreateInstance(type, 
+            return BH.Engine.LifeCycleAssessment.Create.MaterialResult(type, "", "", new List<double> {
                 GetTotal(metrics.Select(x => x.A1)),
                 GetTotal(metrics.Select(x => x.A2)),
                 GetTotal(metrics.Select(x => x.A3)),
@@ -102,7 +103,7 @@ namespace BH.Engine.Adapters.OneClickLCA
                 GetTotal(metrics.Select(x => x.C4)),
                 GetTotal(metrics.Select(x => x.C1toC4)),
                 GetTotal(metrics.Select(x => x.D))
-            ) as EnvironmentalMetric;
+            });
         }
 
         /***************************************************/

@@ -29,6 +29,7 @@ using BH.oM.Adapters.Excel;
 using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -134,7 +135,7 @@ namespace BH.Adapter.OneClickLCA
                 pushItems2.Add(new PushItem
                 {
                     Objects = new List<object> { metricHeaderRow }.Concat(entries.Select(entry => {
-                        EnvironmentalMetric metric = entry.EnvironmentalMetrics.Where(x => x.GetType() == type).FirstOrDefault();
+                        MaterialResult metric = entry.EnvironmentalMetrics.Where(x => x.GetType() == type).FirstOrDefault();
                         if (metric == null)
                             return new TableRow { Content = metricHeaders.Select(x => "").ToList<object>() };
                         else
