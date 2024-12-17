@@ -518,6 +518,10 @@ namespace BH.oM.Adapters.OneClickLCA
         [CategoryLevel(3)]
         [DisplayText("8.3.2 External services")]
         _8_3_2,
+        [CategoryCode("8.3.3")]
+        [CategoryLevel(3)]
+        [DisplayText("8.3.3 Minor building works, ancillary")]
+        _8_3_3,
         [CategoryCode("9")]
         [CategoryLevel(1)]
         [DisplayText("9 Others")]
