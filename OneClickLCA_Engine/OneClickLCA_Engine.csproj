@@ -23,6 +23,14 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+    <Reference Include="BHoM_Engine">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LifeCycleAssessment_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\LifeCycleAssessment_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
