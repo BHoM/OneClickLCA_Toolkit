@@ -22,32 +22,23 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Adapters.OneClickLCA;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Modify
+    [Description("Aditional inputs not found in the original OnceClick LCA report that were necessary for the calculation of the output.")]
+    public class AdditionalInputs : IFragment
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        [Description("TODO")]
+        [DisplayText("Gross floor area")]
+        public double FloorArea { get; set; } = 0;
 
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
-        {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
-        }*/
-
-        /***************************************************/
-
+        [Description("TODO")]
+        [DisplayText("Building life expectancy")]
+        public double BuildingLifeExpectancy { get; set; } = 0;
     }
 }
 

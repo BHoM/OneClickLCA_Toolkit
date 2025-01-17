@@ -20,35 +20,26 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.OneClickLCA;
+using BH.oM.Adapter;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Data.Requests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Create
+    [Description("Defines the target file where the OneClick LCA report will be saved.")]
+    public class FilePushConfig : ActionConfig, IPushConfig
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        public string FileName { get; set; } = "";
 
-        [Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("someInput1", "Description of the input. Will appear in the UI tooltip.")]
-        [Input("someInput2", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(string someInput1, int someInput2)
-        {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            return new ExampleObject() { SomeStringProperty = someInput1, SomeNumberProperty = someInput2 };
-        }
+        public string Directory { get; set; } = "";
 
-        /***************************************************/
-
+        [Description("Format used to arrange the data from the OneClick report in Excel.")]
+        public OutputFormat OutputFormat { get; set; } = OutputFormat.BHoM;
     }
 }
 

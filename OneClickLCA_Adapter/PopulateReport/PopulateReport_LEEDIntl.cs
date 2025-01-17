@@ -20,35 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
+using BH.Adapter;
+using BH.Adapter.Excel;
+using BH.Engine.Adapter;
+using BH.oM.Adapter;
+using BH.oM.Adapters.Excel;
 using BH.oM.Adapters.OneClickLCA;
-using System;
+using BH.oM.Base;
+using BH.oM.Data.Requests;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.Adapter.OneClickLCA
 {
-    public static partial class Modify
+    public partial class OneClickLCAAdapter : BHoMAdapter
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
+        private OneClickReport PopulateReport_LEEDIntl(OneClickReport report, List<Dictionary<string, string>> entries)
         {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
-        }*/
+            return report;
+        }
 
         /***************************************************/
-
     }
 }
+
+
+
 
 

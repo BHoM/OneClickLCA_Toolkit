@@ -20,34 +20,22 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Adapter;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Adapters.OneClickLCA;
+using BH.oM.Data.Requests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Modify
+    [Description("Configuration defining where and how the OneClick LCA report is saved.")]
+    public interface IPushConfig 
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
-        {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
-        }*/
-
-        /***************************************************/
-
+        [Description("Format used to arrange the data from the OneClick report in Excel.")]
+        OutputFormat OutputFormat { get; set; }
     }
 }
 

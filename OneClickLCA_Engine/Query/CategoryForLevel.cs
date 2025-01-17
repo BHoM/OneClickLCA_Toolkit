@@ -20,31 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Adapters.OneClickLCA;
+using BH.oM.OneClickLCA.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Adapters.OneClickLCA
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
+        [Description("Gets the corresponding RICS category for the provided level of detail. If requesting a higher or equal level than the input category, that input will be returned.")]
+        [Input("category", "Original RICS category.")]
+        [Output("category", "Corresponding RICS category for the provided level of detail.")]
+        public static RICSCategory CategoryForLevel(this RICSCategory category, int level)
         {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
-        }*/
+            if (level < 1 || level > 3) 
+            {
+                BH.Engine.Base.Compute.RecordError("The category level should be between 1 and 3");
+                return category;
+            }
+
+            int currentLevel = category.CategoryLevel();
+            string code = category.CategoryCode();
+
+            while (currentLevel > level)
+            {
+                string[] split = code.Split('.');
+                code = split.Take(split.Length - 1).Aggregate((a, b) => a + "." + b);
+                category = Create.RICSCategory(code);
+                currentLevel = category.CategoryLevel();
+            }
+
+            return Create.RICSCategory(code);
+        }
 
         /***************************************************/
 

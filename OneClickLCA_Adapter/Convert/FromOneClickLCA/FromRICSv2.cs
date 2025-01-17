@@ -20,34 +20,41 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
 using BH.oM.Adapters.OneClickLCA;
+using BH.oM.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.Adapter.OneClickLCA
 {
-    public static partial class Modify
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
+        public static RICSCategory FromRICSv2(string category)
         {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
-        }*/
+            int index = category.ToList<char>().FindIndex(x => x >= 65 && x <= 122);
+            string code = category.Substring(0, index).Trim(new char[] { ' ', '.' });
+
+            RICSCategory rics = BH.Engine.Adapters.OneClickLCA.Create.RICSCategory(code);
+            if (rics == RICSCategory.Undefined)
+                return RICSCategory._9;
+            else
+                return rics;
+        }
+
 
         /***************************************************/
+        /**** Private Static Fields                     ****/
+        /***************************************************/
 
+        
+        /***************************************************/
     }
 }
 

@@ -20,31 +20,39 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Adapter.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Convert
+    [Description("RICS WLCA Standard 2023  - concept design stage.")]
+    public enum Indicator
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        // Add methods for converting from BHoM to the specific software types
-        // Example:
-        public static ExampleObject ToOneClickLCA(this BHoMObject node)
-        {
-            //Insert code for convertion
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
+        Undefined,
+        [DisplayText("Whole life carbon assessment, GLA / RICS / Green Mark")]
+        WholeLifeCarbonAssessment,
+        [DisplayText("LCA for BREEAM UK")]
+        BREEAM,
+        [DisplayText("LCA for DGNB (DE)")]
+        DGNB,
+        [DisplayText("LCA for LEED, Int´l (CML)")]
+        LEED_Intl,
+        [DisplayText("Level(s) life-cycle assessment (EN15804 +A1)")]
+        Levels_Assessment_A1,
+        [DisplayText("Level(s) life-cycle assessment (EN15804 +A2)")]
+        Levels_Assessment_A2,
+        [DisplayText("Level(s) life-cycle assessment (EN15804 +A2) (new version available)")]
+        Levels_Assessment_A2_NewVersionAvailable,
+        [DisplayText("Level(s) life-cycle carbon (EN15804 +A1)")]
+        Levels_Carbon_A1,
+        [DisplayText("Level(s) life-cycle carbon (EN15804 +A1/+A2)")]
+        Levels_Carbon_A1A2,
+        [DisplayText("LCA for LEED, US (TRACI)")]
+        LEED_US
     }
 }
 

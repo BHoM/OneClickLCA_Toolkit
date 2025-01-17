@@ -20,31 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Adapters.OneClickLCA;
+using BH.oM.OneClickLCA.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Adapters.OneClickLCA
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
+        [Description("Gets the level of detail associated with the provided RICS category.")]
+        [Input("category", "RICS category to get the level from.")]
+        [Output("level", "Level of detail associated with the input category")]
+        public static int CategoryLevel(this RICSCategory category)
         {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
-        }*/
+            FieldInfo fi = typeof(RICSCategory).GetField(category.ToString());
+            CategoryLevelAttribute[] attributes = fi.GetCustomAttributes(typeof(CategoryLevelAttribute), false) as CategoryLevelAttribute[];
+
+            if (attributes != null && attributes.Count() > 0)
+                return attributes.First().Level;
+            else
+                return -1; 
+        }
 
         /***************************************************/
 

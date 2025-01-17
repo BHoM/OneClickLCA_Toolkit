@@ -22,32 +22,31 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Adapters.OneClickLCA;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Modify
+    [Description("Additional information found about an element in the original report for DGNB (DE).")]
+    public class  OriginalExtras_DGNB : BHoMObject, IOriginalExtras
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        [Description("TODO")]
+        [DisplayText("Total use of renewable primary energy")]
+        public double NonRenewablePrimaryEnergyUse { get; set; } = 0;
 
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
-        {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
-        }*/
+        [Description("TODO")]
+        [DisplayText("Total use of non renewable primary energy")]
+        public double RenewablePrimaryEnergyUse { get; set; } = 0;
 
-        /***************************************************/
+        [Description("TODO")]
+        [DisplayText("Total use of primary energy")]
+        public double PrimaryEnergyUse { get; set; } = 0;
 
+        [Description("TODO")]
+        [DisplayText("Use of net fresh water")]
+        public double NetFreshWaterUse { get; set; } = 0;
     }
 }
 

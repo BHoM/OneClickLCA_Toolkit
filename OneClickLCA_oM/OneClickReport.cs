@@ -29,20 +29,26 @@ using System.Linq;
 
 namespace BH.oM.Adapters.OneClickLCA
 {
-    [Description("Object description in here. Will appear in the UI tooltip.")]
-    public class ExampleObject : BHoMObject
+    [Description("Represents a life cycle assessment as extracted from a OnceClick LCA report.")]
+    public class OneClickReport : BHoMObject
     {
-        // // See examples in the BHoM repo and the wiki to see how we define types.
-        // // Generally, all properties should be public and have public getter and setter.
-        // // BHoM Objects should have orthogonal properties and no behaviour (no methods), as in C# Records (or Python Dataclasses).
-        // // No constructor should be specified. If a specific instantiaton method is needed, we make it as an "Engine/Create" method.
-        // // Objects created with this convention will automatically appear as UI components (e.g. Grasshopper component).
+        [Description("TODO")]
+        [DisplayText("Entity users")]
+        public List<string> EntityUsers { get; set; } = new List<string>();
 
-        [Description("Property description in here.")]
-        public string SomeStringProperty { get; set; }
+        [Description("TODO")]
+        [DisplayText("Project name")]
+        public string ProjectName { get; set; } = "";
 
-        [Description("Property description in here.")]
-        public int SomeNumberProperty { get; set; }
+        [Description("TODO")]
+        [DisplayText("Design name")]
+        public string DesignName { get; set; } = "";
+
+        [Description("TODO")]
+        public Indicator Indicator { get; set; } = Indicator.Undefined;
+
+        [Description("TODO")]
+        public List<ReportEntry> Entries { get; set; } = new List<ReportEntry>();
     }
 }
 

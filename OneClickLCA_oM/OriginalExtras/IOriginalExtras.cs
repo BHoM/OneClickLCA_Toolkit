@@ -20,31 +20,19 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.OneClickLCA;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Adapter.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Convert
+    [Description("Additional information found about an element in the original report.")]
+    public interface IOriginalExtras : IBHoMObject
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        // Add methods for converting to BHoM from the specific software types. 
-        // Example:
-        public static BHoMObject FromOneClickLCA(this ExampleObject node)
-        {
-            //Insert code for convertion
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
+        
     }
 }
 

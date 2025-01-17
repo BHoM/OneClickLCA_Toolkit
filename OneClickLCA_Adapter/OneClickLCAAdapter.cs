@@ -41,28 +41,15 @@ namespace BH.Adapter.OneClickLCA
         [Output("The created OneClickLCA adapter.")]
         public OneClickLCAAdapter()
         {
-            // The Adapter constructor can be used to configure the Adapter behaviour.
-            // For example:
-            m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.CreateOnly; // Adapter `Push` Action simply calls "Create" method.
-            
-            // See the wiki, the AdapterSettings object and other Adapters to see how it can be configured.
 
-            // If your toolkit needs to define this.AdapterComparers and or this.DependencyTypes,
-            // this constructor has to populate those properties.
-            // See the wiki for more information.
+            m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.CreateNonExisting; 
         }
 
-        // You can add any other constructors that take more inputs here. 
 
         /***************************************************/
         /**** Private  Fields                           ****/
         /***************************************************/
 
-        // You can add any private variable that should be in common to any other adapter methods here.
-        // If you need to add some private methods, please consider first what their nature is:
-        // if a method does not need any external call (API call, connection call, etc.)
-        // we place them in the Engine project, and then reference them from the Adapter.
-        // See the wiki for more information.
 
         /***************************************************/
     }

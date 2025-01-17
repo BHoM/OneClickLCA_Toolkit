@@ -22,32 +22,40 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Adapters.OneClickLCA;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Adapters.OneClickLCA
+namespace BH.oM.Adapters.OneClickLCA
 {
-    public static partial class Modify
+    [Description("Additional information found about an element in the original report for Whole life carbon assessment, GLA / RICS / Green Mark.")]
+    public class  OriginalExtras_WLCA : BHoMObject, IOriginalExtras
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        [Description("TODO")]
+        public string Construction { get; set; } = "";
 
-        /*[Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
-        {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
-        }*/
+        [Description("TODO")]
+        [DisplayText("Transformation process")]
+        public string TransformationProcess { get; set; } = "";
 
-        /***************************************************/
+        [Description("TODO")]
+        public string UniClass { get; set; } = "";
 
+        [Description("TODO")]
+        [DisplayText("Estimated reusable materials")]
+        [Mass]
+        public double EstimatedReusableMaterials  { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("Estimated recyclable materials")]
+        [Mass]
+        public double EstimatedRecyclableMaterials { get; set; } = 0;
+
+        [Description("TODO")]
+        [DisplayText("End of life process")]
+        public string EOLProcess { get; set; } = "";
     }
 }
 
