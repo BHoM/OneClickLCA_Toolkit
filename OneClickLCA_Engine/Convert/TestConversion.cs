@@ -76,11 +76,14 @@ namespace BH.Engine.Adapters.OneClickLCA
                         // Loop over the EnvironmentalMetrics Objects Property Names
                         foreach (string propertyName in propertyNames)
                         {
-                            // Check if the property name is in the list of valid property names with the prefix
-                            if (validPropertyNames.Contains(propertyName.Replace(prefix, "")))
+                            // Extract the suffix of the property name
+                            string shortPropertyName = propertyName.Replace(prefix, "");
+
+                            // Check if the short property name is in the list of valid property names
+                            if (validPropertyNames.Contains(shortPropertyName))
                             {
                                 // Extract the property value and test if the value is not equal to zero
-                                object propValue = BH.Engine.Base.Query.PropertyValue(firstMetric, propertyName);
+                                object propValue = BH.Engine.Base.Query.PropertyValue(firstMetric, shortPropertyName);
 
                                 if (propValue != null && (double)propValue != 0)
                                 {
