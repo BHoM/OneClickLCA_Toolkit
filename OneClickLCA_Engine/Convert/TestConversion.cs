@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System.Collections.Generic;
@@ -82,13 +83,16 @@ namespace BH.Engine.Adapters.OneClickLCA
                             // Check if the short property name is in the list of valid property names
                             if (validPropertyNames.Contains(shortPropertyName))
                             {
-                                // Extract the property value and test if the value is not equal to zero
+                                // Extract the property value and test if the value is not equal to zero and not NaN
                                 object propValue = BH.Engine.Base.Query.PropertyValue(firstMetric, shortPropertyName);
 
-                                if (propValue != null && (double)propValue != 0)
+                                if (propValue != null && (double)propValue != 0 && !double.IsNaN((double)propValue))
                                 {
-                                    // Add the entry to the new list (creating a duplicate)
-                                    newObjects.Add(co);
+                                    // Create a new CustomObject for each valid propValue
+                                    CustomObject newObject = co.DeepClone();
+
+                                    // Add the new object to the list
+                                    newObjects.Add(newObject);
                                 }
                             }
                         }
