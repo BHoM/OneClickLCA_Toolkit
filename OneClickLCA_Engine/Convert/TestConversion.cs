@@ -69,7 +69,7 @@ namespace BH.Engine.Adapters.OneClickLCA
                     if (environmentalMetrics != null && ((List<object>)environmentalMetrics).Count > 0)
                     {
                         var metricsList = (List<object>)environmentalMetrics;
-                        var firstMetric = metricsList[0];
+                        var firstMetric = metricsList[0]; // This assumes the Results class, if you want to improve this method you could also loop over the different types of metrics or hard code to a specific class. I left this as ClimateChangeTotalNoBiogenicMaterialResult until the user specified anything else. 
 
                         // Get all of the property names of the EnvironmentalMetrics Object
                         List<string> propertyNames = new List<string>(Base.Query.GetAllPropertyFullNames(firstMetric));
