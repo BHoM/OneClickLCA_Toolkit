@@ -93,10 +93,41 @@ namespace BH.Adapter.OneClickLCA
 
         private List<MaterialResult> GetEnvironmentalMetrics(Dictionary<string, Dictionary<string, string>> sections, Dictionary<string, List<string>> mapping, Indicator indicator, string materialName = "", string epdName = "")
         {
-            return GetCarbonAccessors(indicator)
+            List<MaterialResult> results = GetCarbonAccessors(indicator)
                 .Concat(GetOtherMetrics(indicator))
                 .Select(x => GetMaterialResult(x.Type, sections, x.Name, materialName, epdName, mapping, x.Factor))
                 .ToList();
+
+            if (indicator == Indicator.Levels_Assessment_A2 || indicator == Indicator.Levels_Assessment_A2_NewVersionAvailable)
+            {
+                ClimateChangeTotalMaterialResult total = results.OfType<ClimateChangeTotalMaterialResult>().FirstOrDefault();
+                ClimateChangeBiogenicMaterialResult biogenic = results.OfType<ClimateChangeBiogenicMaterialResult>().FirstOrDefault();
+
+                if (total != null && biogenic != null)
+                    results.Add(new ClimateChangeTotalNoBiogenicMaterialResult(materialName, epdName,
+                        total.A1 - biogenic.A1,
+                        total.A2 - biogenic.A2,
+                        total.A3 - biogenic.A3,
+                        total.A1toA3 - biogenic.A1toA3,
+                        total.A4 - biogenic.A4,
+                        total.A5 - biogenic.A5,
+                        total.B1 - biogenic.B1,
+                        total.B2 - biogenic.B2,
+                        total.B3 - biogenic.B3,
+                        total.B4 - biogenic.B4,
+                        total.B5 - biogenic.B5,
+                        total.B6 - biogenic.B6,
+                        total.B7 - biogenic.B7,
+                        total.B1toB7 - biogenic.B1toB7,
+                        total.C1 - biogenic.C1,
+                        total.C2 - biogenic.C2,
+                        total.C3 - biogenic.C3,
+                        total.C4 - biogenic.C4,
+                        total.C1toC4 - biogenic.C1toC4,
+                        total.D - biogenic.D));
+            }
+
+            return results;
         }
 
         /***************************************************/
@@ -109,7 +140,7 @@ namespace BH.Adapter.OneClickLCA
                 case Indicator.Levels_Assessment_A2_NewVersionAvailable:
                     return new List<MetricAccessor>
                     {
-                        new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "Global Warming Potential total kg CO₂e"},
+                        new MetricAccessor { Type = typeof(ClimateChangeTotalMaterialResult), Name = "Global Warming Potential total kg CO₂e"},
                         new MetricAccessor { Type = typeof(ClimateChangeBiogenicMaterialResult), Name = "Global Warming Potential biogenic kg CO₂e" },
                         new MetricAccessor { Type = typeof(ClimateChangeFossilMaterialResult), Name = "Global Warming Potential fossil kg CO₂e" },
                         new MetricAccessor { Type = typeof(ClimateChangeLandUseMaterialResult), Name = "Global Warming Potential, LULUC kg CO₂e" }
@@ -118,15 +149,17 @@ namespace BH.Adapter.OneClickLCA
                 case Indicator.Levels_Carbon_A1:
                     return new List<MetricAccessor>
                     {
-                        new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "TOTAL kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "Global warming kg CO₂e" },
                         new MetricAccessor { Type = typeof(ClimateChangeBiogenicMaterialResult), Name = "Biogenic carbon storage kg CO₂e bio" }
                     };
                 case Indicator.Levels_Carbon_A1A2:
                     return new List<MetricAccessor>
                     {
-                        new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "Global Warming Potential total kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeTotalNoBiogenicMaterialResult), Name = "Global Warming Potential fossil + LULUC kg CO₂e" },
                         new MetricAccessor { Type = typeof(ClimateChangeBiogenicMaterialResult), Name = "Global Warming Potential biogenic kg CO₂e" },
-                        new MetricAccessor { Type = typeof(ClimateChangeLandUseMaterialResult), Name = "Global Warming Potential, LULUC kg CO₂e" }
+                        new MetricAccessor { Type = typeof(ClimateChangeFossilMaterialResult), Name = "Global warming potential (incl. +A2) kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeLandUseMaterialResult), Name = "Global Warming Potential, LULUC kg CO₂e" },
+                        new MetricAccessor { Type = typeof(ClimateChangeTotalMaterialResult), Name = "Global Warming Potential total kg CO₂e" }
                     };
                 default:
                     return new List<MetricAccessor>();
