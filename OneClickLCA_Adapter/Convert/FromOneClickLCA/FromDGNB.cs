@@ -38,7 +38,9 @@ namespace BH.Adapter.OneClickLCA
 
         public static RICSCategory FromDGNB(string category)
         {
-            int index = category.ToList<char>().FindIndex(x => x >= 65 && x <= 122);
+            if (string.IsNullOrEmpty(category))
+                return RICSCategory.Undefined;
+
             string code = category.Split(new char[] { ' ' }).First();
 
             if (m_Mapping_DGNB.ContainsKey(code))
@@ -54,6 +56,7 @@ namespace BH.Adapter.OneClickLCA
 
         private static Dictionary<string, RICSCategory> m_Mapping_DGNB = new Dictionary<string, RICSCategory>
         {
+            [""] = RICSCategory.Undefined,
             ["310"] = RICSCategory._0_1_2,
             ["320"] = RICSCategory._1_1,
             ["330B"] = RICSCategory._2_6,

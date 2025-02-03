@@ -38,8 +38,11 @@ namespace BH.Adapter.OneClickLCA
 
         public static RICSCategory FromRICSv2(string category)
         {
+            if (string.IsNullOrEmpty(category))
+                return RICSCategory.Undefined;
+
             int index = category.ToList<char>().FindIndex(x => x >= 65 && x <= 122);
-            string code = category.Substring(0, index).Trim(new char[] { ' ', '.' });
+            string code = index >= 0 ? category.Substring(0, index).Trim(new char[] { ' ', '.' }) : category;
 
             RICSCategory rics = BH.Engine.Adapters.OneClickLCA.Create.RICSCategory(code);
             if (rics == RICSCategory.Undefined)

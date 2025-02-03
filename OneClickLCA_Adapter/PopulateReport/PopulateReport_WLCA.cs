@@ -47,7 +47,7 @@ namespace BH.Adapter.OneClickLCA
         private OneClickReport PopulateReport_WLCA(OneClickReport report, List<Dictionary<string, string>> entries)
         {
             IEnumerable<Dictionary<string, Dictionary<string, string>>> groups = entries
-                .Where(x => !string.IsNullOrWhiteSpace(GetText(x, "Resource")) && Regex.IsMatch(GetText(x, "RICS category"), "^[1-9]"))
+                .Where(x => !string.IsNullOrWhiteSpace(GetText(x, "Resource")))
                 .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "RICS category") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"))
                 .SelectMany(x => GetEntries(x));
 

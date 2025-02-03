@@ -56,7 +56,7 @@ namespace BH.Adapter.OneClickLCA
             }
 
             IEnumerable<Dictionary<string, Dictionary<string, string>>> groups = entries
-                .Where(x => !string.IsNullOrWhiteSpace(GetText(x, "Resource")) && Regex.IsMatch(GetText(x, "KG DIN 276"), "^[1-9]"))
+                .Where(x => !string.IsNullOrWhiteSpace(GetText(x, "Resource")))
                 .GroupBy(x => GetText(x, "Resource") + " - " + GetText(x, "KG DIN 276") + " - " + GetText(x, "Comment") + " - " + GetText(x, "User input"))
                 .SelectMany(x => GetEntries(x));
 

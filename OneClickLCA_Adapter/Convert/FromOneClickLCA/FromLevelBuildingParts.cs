@@ -38,8 +38,11 @@ namespace BH.Adapter.OneClickLCA
 
         public static RICSCategory FromLevelBuildingParts(string category)
         {
+            if (string.IsNullOrEmpty(category))
+                return RICSCategory.Undefined;
+
             int index = category.ToList<char>().FindIndex(x => x >= 65 && x <= 122);
-            string code = category.Substring(0, index).Trim(new char[] { ' ', '.' });
+            string code = index >= 0 ? category.Substring(0, index).Trim(new char[] { ' ', '.' }) : category;
 
             if (m_Mapping_Levels.ContainsKey(code))
                 return m_Mapping_Levels[code];
@@ -54,6 +57,7 @@ namespace BH.Adapter.OneClickLCA
 
         private static Dictionary<string, RICSCategory> m_Mapping_Levels = new Dictionary<string, RICSCategory>
         {
+            [""] = RICSCategory.Undefined,
             ["1"] = RICSCategory._2,
             ["1.1"] = RICSCategory._1_1,
             ["1.1.1"] = RICSCategory._1_1,

@@ -38,8 +38,11 @@ namespace BH.Adapter.OneClickLCA
 
         public static RICSCategory FromOmniClass(string category)
         {
+            if (string.IsNullOrEmpty(category))
+                return RICSCategory.Undefined;
+
             int index = category.ToList<char>().FindIndex(x => x >= 65 && x <= 122);
-            string code = category.Substring(0, index).Trim(new char[] { ' ', '.' });
+            string code = index >= 0 ? category.Substring(0, index).Trim(new char[] { ' ', '.' }) : category;
 
             if (m_Mapping_OmniClass.ContainsKey(code))
                 return m_Mapping_OmniClass[code];
@@ -54,6 +57,7 @@ namespace BH.Adapter.OneClickLCA
 
         private static Dictionary<string, RICSCategory> m_Mapping_OmniClass = new Dictionary<string, RICSCategory>
         {
+            [""] = RICSCategory.Undefined,
             ["21-01 10 10"] = RICSCategory._1_1,
             ["21-01 10 20"] = RICSCategory._1_1,
             ["21-01 20 10"] = RICSCategory._1_2_3,
